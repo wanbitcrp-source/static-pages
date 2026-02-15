@@ -3,37 +3,224 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>过年亲戚称呼小助手</title>
+    <title>亲戚称呼助手 | 过年必备</title>
+    <!-- 引入 Inter 字体 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: "PingFang SC", sans-serif; background: #c0392b; color: white; padding: 20px; text-align: center; }
-        .container { background: white; color: #333; border-radius: 15px; padding: 20px; max-width: 500px; margin: 0 auto; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
-        h1 { color: #e74c3c; margin-bottom: 5px; }
-        p.subtitle { color: #7f8c8d; margin-bottom: 20px; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .item { background: #fdf2f2; padding: 15px; border-radius: 10px; border: 1px solid #fadbd8; }
-        .relation { font-size: 14px; color: #7f8c8d; display: block; }
-        .name { font-size: 20px; font-weight: bold; color: #c0392b; }
-        .btn-back { display: inline-block; margin-top: 20px; color: #3498db; text-decoration: none; font-size: 14px; }
+        :root {
+            --primary: #ef4444; /* 更有质感的红色 */
+            --bg: #fdf2f2;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --card-bg: #ffffff;
+            --border-radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-dark);
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 0 20px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #fee2e2;
+            color: var(--primary);
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 12px;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: #111827;
+        }
+
+        .search-box {
+            position: sticky;
+            top: 10px;
+            z-index: 10;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 16px 20px;
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(239, 68, 68, 0.1);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+            font-size: 16px;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .search-box input:focus {
+            box-shadow: 0 10px 20px -5px rgba(239, 68, 68, 0.2);
+            border-color: var(--primary);
+        }
+
+        .grid {
+            display: grid;
+            gap: 12px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+            border: 1px solid transparent;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+            border-color: rgba(239, 68, 68, 0.1);
+        }
+
+        .card .info h3 {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-light);
+            margin-bottom: 4px;
+        }
+
+        .card .info p {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .card .action-btn {
+            width: 40px;
+            height: 40px;
+            background: #fff1f2;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 18px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        .back-link {
+            text-decoration: none;
+            color: var(--text-light);
+            font-size: 14px;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .back-link:hover {
+            color: var(--primary);
+        }
+
+        /* 动画 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            animation: fadeIn 0.4s ease-out both;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🧧 亲戚称呼助手</h1>
-        <p class="subtitle">教孩子过年怎么叫人</p>
-        <div class="grid">
-            <div class="item"><span class="relation">爸爸的姐姐/妹妹</span><span class="name">姑姑</span></div>
-            <div class="item"><span class="relation">爸爸的哥哥</span><span class="name">伯伯</span></div>
-            <div class="item"><span class="relation">爸爸的弟弟</span><span class="name">叔叔</span></div>
-            <div class="item"><span class="relation">妈妈的兄弟</span><span class="name">舅舅</span></div>
-            <div class="item"><span class="relation">妈妈的姐妹</span><span class="name">姨妈</span></div>
-            <div class="item"><span class="relation">哥哥/姐姐的孩子</span><span class="name">侄子/侄女</span></div>
-            <div class="item"><span class="relation">弟弟/妹妹的孩子</span><span class="name">外甥/外甥女</span></div>
-            <div class="item"><span class="relation">爸爸的爸爸</span><span class="name">爷爷</span></div>
-            <div class="item"><span class="relation">爸爸的妈妈</span><span class="name">奶奶</span></div>
-            <div class="item"><span class="relation">妈妈的爸爸</span><span class="name">外公/老爷</span></div>
-            <div class="item"><span class="relation">妈妈的妈妈</span><span class="name">外婆/姥姥</span></div>
-        </div>
-        <a href="../" class="btn-back">⬅️ 返回首页</a>
+
+<div class="app-container">
+    <header>
+        <div class="badge">🧧 2026 春节版</div>
+        <h1>亲戚称呼助手</h1>
+    </header>
+
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="搜索称呼，如'爸爸'..." oninput="filterCards()">
     </div>
+
+    <div class="grid" id="cardGrid">
+        <div class="card" data-key="爸爸的哥哥"><div class="info"><h3>爸爸的哥哥</h3><p>伯伯</p></div><div class="action-btn">🗣️</div></div>
+        <div class="card" data-key="爸爸的弟弟"><div class="info"><h3>爸爸的弟弟</h3><p>叔叔</p></div><div class="action-btn">🗣️</div></div>
+        <div class="card" data-key="爸爸的姐姐/妹妹"><div class="info"><h3>爸爸的姐姐/妹妹</h3><p>姑姑</p></div><div class="action-btn">🗣️</div></div>
+        <div class="card" data-key="妈妈的兄弟"><div class="info"><h3>妈妈的兄弟</h3><p>舅舅</p></div><div class="action-btn">🗣️</div></div>
+        <div class="card" data-key="妈妈的姐妹"><div class="info"><h3>妈妈的姐妹</h3><p>姨妈</p></div><div class="action-btn">🗣️</div></div>
+        <div class="card" data-key="妈妈的爸爸"><div class="info"><h3>妈妈的爸爸</h3><p>外公 / 姥爷</p></div><div class="action-btn">🗣️</div></div>
+        <div class="card" data-key="妈妈的妈妈"><div class="info"><h3>妈妈的妈妈</h3><p>外婆 / 姥姥</p></div><div class="action-btn">🗣️</div></div>
+        <div class="card" data-key="爸爸的爸爸"><div class="info"><h3>爸爸的爸爸</h3><p>爷爷</p></div><div class="action-btn">🗣️</div></div>
+        <div class="card" data-key="爸爸的妈妈"><div class="info"><h3>爸爸的妈妈</h3><p>奶奶</p></div><div class="action-btn">🗣️</div></div>
+        <div class="card" data-key="哥哥/姐姐的孩子"><div class="info"><h3>哥哥/姐姐的孩子</h3><p>侄子 / 侄女</p></div><div class="action-btn">🗣️</div></div>
+        <div class="card" data-key="弟弟/妹妹的孩子"><div class="info"><h3>弟弟/妹妹的孩子</h3><p>外甥 / 外甥女</p></div><div class="action-btn">🗣️</div></div>
+    </div>
+
+    <footer>
+        <a href="../" class="back-link">← 返回托管平台</a>
+    </footer>
+</div>
+
+<script>
+    function filterCards() {
+        const query = document.getElementById('searchInput').value.toLowerCase();
+        const cards = document.querySelectorAll('.card');
+        
+        cards.forEach(card => {
+            const text = card.getAttribute('data-key').toLowerCase() + card.querySelector('p').innerText.toLowerCase();
+            if (text.includes(query)) {
+                card.style.display = 'flex';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+
+    // 给每个卡片加一点交互
+    document.querySelectorAll('.card').forEach((card, index) => {
+        card.style.animationDelay = `${index * 0.05}s`;
+        card.onclick = () => {
+            const name = card.querySelector('p').innerText;
+            // 可以在这里加语音播报
+            console.log('准备播报: ' + name);
+        };
+    });
+</script>
+
 </body>
 </html>
