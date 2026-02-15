@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>每日打卡 | 能量补给站</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-muted: #64748b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            background: var(--card-bg);
+            padding: 40px 30px;
+            border-radius: 32px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .date {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 8px;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 32px;
+            letter-spacing: -0.02em;
+        }
+
+        .checkin-btn {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.4);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 40px;
+        }
+
+        .checkin-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 30px -5px rgba(99, 102, 241, 0.5);
+        }
+
+        .checkin-btn:active {
+            transform: scale(0.95);
+        }
+
+        .checkin-btn.done {
+            background: #f1f5f9;
+            color: #94a3b8;
+            box-shadow: none;
+            cursor: default;
+        }
+
+        .quote-container {
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .quote {
+            font-size: 18px;
+            font-weight: 600;
+            line-height: 1.6;
+            color: var(--text);
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.5s ease;
+        }
+
+        .quote.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .author {
+            margin-top: 12px;
+            font-size: 14px;
+            color: var(--text-muted);
+            opacity: 0;
+            transition: all 0.5s ease 0.2s;
+        }
+
+        .author.show {
+            opacity: 1;
+        }
+
+        .footer-nav {
+            margin-top: 40px;
+        }
+
+        .back-link {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="date" id="currentDate">February 15, 2026</div>
+    <h1>每日能量补给</h1>
+
+    <button class="checkin-btn" id="checkinBtn" onclick="handleCheckin()">打卡</button>
+
+    <div class="quote-container">
+        <p class="quote" id="quoteText"></p>
+        <p class="author" id="quoteAuthor"></p>
+    </div>
+
+    <div class="footer-nav">
+        <a href="../" class="back-link">← 返回托管平台</a>
+    </div>
+</div>
+
+<script>
+    const quotes = [
+        { text: "每一天都是一个新的开始，深呼吸，重新出发。", author: "Claw" },
+        { text: "种一棵树最好的时间是十年前，其次是现在。", author: "谚语" },
+        { text: "你今天的努力，是明天幸运的伏笔。", author: "励志语录" },
+        { text: "不要等待机会，而要创造机会。", author: "成功学" },
+        { text: "心之所向，素履以往。生如逆旅，一苇以航。", author: "七槿" },
+        { text: "凡是过往，皆为序章。", author: "莎士比亚" },
+        { text: "生活明朗，万物可爱，人间值得，未来可期。", author: "美好生活" },
+        { text: "不驰于空想，不骛于虚声。", author: "李大钊" },
+        { text: "所谓万丈深渊，下去，也是前程万里。", author: "木心" },
+        { text: "生活不在别处，当下即是全部。", author: "哲学" }
+    ];
+
+    // 设置日期
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    document.getElementById('currentDate').innerText = new Date().toLocaleDateString('zh-CN', options);
+
+    // 检查今天是否已打卡
+    const today = new Date().toDateString();
+    const lastCheckin = localStorage.getItem('last_checkin');
+
+    if (lastCheckin === today) {
+        const btn = document.getElementById('checkinBtn');
+        btn.innerText = '已打卡';
+        btn.classList.add('done');
+        showRandomQuote();
+    }
+
+    function handleCheckin() {
+        if (localStorage.getItem('last_checkin') === today) return;
+
+        localStorage.setItem('last_checkin', today);
+        
+        const btn = document.getElementById('checkinBtn');
+        btn.innerText = '已打卡';
+        btn.classList.add('done');
+        
+        showRandomQuote();
+    }
+
+    function showRandomQuote() {
+        const quoteObj = quotes[Math.floor(Math.random() * quotes.length)];
+        const textEl = document.getElementById('quoteText');
+        const authorEl = document.getElementById('quoteAuthor');
+
+        textEl.innerText = quoteObj.text;
+        authorEl.innerText = "— " + quoteObj.author;
+
+        textEl.classList.add('show');
+        authorEl.classList.add('show');
+    }
+</script>
+
+</body>
+</html>
