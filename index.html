@@ -3,44 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML 托管平台 - 预览版</title>
+    <title>HTML 托管平台 - 内容管理</title>
     <style>
-        :root { --sidebar-width: 300px; --primary: #2563eb; }
-        body, html { margin: 0; padding: 0; height: 100%; font-family: system-ui, sans-serif; overflow: hidden; }
+        :root { --sidebar-width: 280px; --primary: #2563eb; }
+        body, html { margin: 0; padding: 0; height: 100%; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; overflow: hidden; }
         
         .layout { display: flex; height: 100vh; }
         
         /* 侧边栏 */
-        .sidebar { width: var(--sidebar-width); background: #f8fafc; border-right: 1px solid #e2e8f0; display: flex; flex-direction: column; }
-        .sidebar-header { padding: 20px; border-bottom: 1px solid #e2e8f0; background: white; }
-        .sidebar-header h1 { font-size: 1.25rem; margin: 0; color: #0f172a; }
+        .sidebar { width: var(--sidebar-width); background: #ffffff; border-right: 1px solid #e5e7eb; display: flex; flex-direction: column; }
+        .sidebar-header { padding: 24px 20px; border-bottom: 1px solid #f3f4f6; }
+        .sidebar-header h1 { font-size: 1.1rem; margin: 0; color: #111827; display: flex; align-items: center; gap: 8px; }
         
-        .nav-list { flex: 1; overflow-y: auto; padding: 10px; }
-        .nav-item { padding: 12px 15px; border-radius: 8px; cursor: pointer; margin-bottom: 5px; color: #475569; transition: all 0.2s; border: 1px solid transparent; display: flex; justify-content: space-between; align-items: center; }
-        .nav-item:hover { background: #e2e8f0; color: #0f172a; }
-        .nav-item.active { background: white; color: var(--primary); border-color: var(--primary); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .nav-list { flex: 1; overflow-y: auto; padding: 12px; }
+        .nav-section-title { font-size: 12px; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.05em; padding: 10px 8px; }
+        .nav-item { padding: 10px 12px; border-radius: 6px; cursor: pointer; margin-bottom: 4px; color: #4b5563; transition: all 0.2s; display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
+        .nav-item:hover { background: #f3f4f6; color: #111827; }
+        .nav-item.active { background: #eff6ff; color: var(--primary); font-weight: 500; }
         
-        .upload-btn { margin: 15px; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; text-align: center; }
+        .footer-info { padding: 15px; background: #f9fafb; border-top: 1px solid #e5e7eb; font-size: 12px; color: #6b7280; }
+        .status-dot { width: 8px; height: 8px; background: #10b981; border-radius: 50%; display: inline-block; margin-right: 5px; }
 
         /* 主显示区 */
-        .main-content { flex: 1; background: #fff; display: flex; flex-direction: column; position: relative; }
+        .main-content { flex: 1; background: #f3f4f6; display: flex; flex-direction: column; }
+        .top-bar { height: 50px; background: white; border-bottom: 1px solid #e5e7eb; display: flex; align-items: center; padding: 0 20px; justify-content: space-between; }
+        .url-display { font-family: monospace; font-size: 12px; color: #6b7280; background: #f9fafb; padding: 4px 10px; border-radius: 4px; border: 1px solid #e5e7eb; }
+        
         iframe { border: none; width: 100%; height: 100%; flex: 1; background: #fff; }
         
-        .welcome { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: #94a3b8; text-align: center; padding: 20px; }
-        .welcome h2 { color: #475569; margin-bottom: 10px; }
-
-        /* 上传弹窗 */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 100; align-items: center; justify-content: center; }
-        .modal-content { background: white; padding: 30px; border-radius: 12px; width: 400px; box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1); }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 5px; }
-        input { width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; }
-        .modal-actions { display: flex; gap: 10px; margin-top: 20px; }
-        .btn-cancel { background: #e2e8f0; color: #475569; border: none; padding: 10px; flex: 1; border-radius: 6px; cursor: pointer; }
-        .btn-submit { background: var(--primary); color: white; border: none; padding: 10px; flex: 2; border-radius: 6px; cursor: pointer; }
-
-        #config-banner { background: #fffbeb; border-bottom: 1px solid #fef3c7; padding: 10px 20px; font-size: 13px; color: #92400e; display: flex; justify-content: space-between; align-items: center; }
-        #config-banner button { background: none; border: 1px solid #d97706; color: #d97706; padding: 2px 8px; border-radius: 4px; cursor: pointer; }
+        .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: #9ca3af; text-align: center; }
+        .empty-state svg { width: 64px; height: 64px; margin-bottom: 16px; color: #d1d5db; }
     </style>
 </head>
 <body>
@@ -52,203 +44,62 @@
             <h1>🚀 HTML 托管平台</h1>
         </div>
         
-        <div id="config-banner" style="display:none;">
-            <span>需要配置 GitHub Token 以加载列表</span>
-            <button onclick="showConfig()">设置</button>
+        <div class="nav-list" id="appList">
+            <div class="nav-section-title">我的页面</div>
+            <!-- 静态列出已知应用，你可以之后让我动态更新 -->
+            <div class="nav-item" onclick="previewApp('calculator', this)">
+                <span>🔢 在线计算器</span>
+            </div>
+            <div class="nav-item" onclick="previewApp('kinship', this)">
+                <span>🧧 亲戚称呼查询</span>
+            </div>
         </div>
 
-        <button class="upload-btn" onclick="showUploadModal()">+ 上传新页面</button>
-        
-        <div class="nav-list" id="appList">
-            <div style="text-align:center; padding: 20px; color: #94a3b8;">正在加载内容...</div>
+        <div class="footer-info">
+            <div style="margin-bottom: 8px;"><span class="status-dot"></span> 系统状态：运行中</div>
+            <p style="margin: 0; line-height: 1.4;">提示：如需上传新页面，请直接在飞书发送代码给 Claw。</p>
         </div>
     </div>
 
     <!-- 主显示区 -->
     <div class="main-content">
-        <div id="preview-area" style="height: 100%;">
-            <div class="welcome" id="welcome-msg">
-                <h2>🔍 内容检查器</h2>
-                <p>从左侧选择一个页面进行预览</p>
-                <p style="font-size: 13px;">(新上传的页面可能需要 1 分钟左右才能在这里预览)</p>
+        <div class="top-bar" id="topBar" style="display:none;">
+            <span id="currentTitle" style="font-weight: 600; font-size: 14px;">预览</span>
+            <span class="url-display" id="currentUrl"></span>
+        </div>
+        
+        <div id="preview-container" style="height: 100%;">
+            <div class="empty-state" id="empty-state">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                <h2>内容检查器</h2>
+                <p>请从左侧选择一个 HTML 页面进行内容检查</p>
             </div>
             <iframe id="preview-iframe" style="display:none;"></iframe>
         </div>
     </div>
 </div>
 
-<!-- 上传弹窗 -->
-<div class="modal" id="uploadModal">
-    <div class="modal-content">
-        <h2 style="margin-top:0;">📤 部署新页面</h2>
-        <div class="form-group">
-            <label>应用名称 (英文文件夹名)</label>
-            <input type="text" id="appName" placeholder="例如: my-cool-app">
-        </div>
-        <div class="form-group">
-            <label>HTML 文件</label>
-            <input type="file" id="fileInput" accept=".html">
-        </div>
-        <div class="modal-actions">
-            <button class="btn-cancel" onclick="closeModal('uploadModal')">取消</button>
-            <button class="btn-submit" id="uploadBtn" onclick="handleUpload()">开始部署</button>
-        </div>
-        <p id="upload-status" style="font-size: 12px; margin-top: 10px; color: #2563eb; display:none;"></p>
-    </div>
-</div>
-
-<!-- 配置弹窗 -->
-<div class="modal" id="configModal">
-    <div class="modal-content">
-        <h2 style="margin-top:0;">⚙️ 配置 Token</h2>
-        <p style="font-size: 13px; color: #64748b;">为了列出你的所有应用，我们需要你的 GitHub PAT。</p>
-        <div class="form-group">
-            <label>GitHub Token (PAT)</label>
-            <input type="password" id="ghToken" placeholder="github_pat_...">
-        </div>
-        <div class="modal-actions">
-            <button class="btn-cancel" onclick="closeModal('configModal')">关闭</button>
-            <button class="btn-submit" onclick="saveConfig()">保存配置</button>
-        </div>
-    </div>
-</div>
-
 <script>
-    const OWNER = 'wanbitcrp-source';
-    const REPO = 'static-pages';
-    let currentToken = localStorage.getItem('gh_token') || '';
-
-    // 初始化加载
-    window.onload = () => {
-        if (!currentToken) {
-            document.getElementById('config-banner').style.display = 'flex';
-        }
-        loadAppList();
-    };
-
-    function showUploadModal() { document.getElementById('uploadModal').style.display = 'flex'; }
-    function showConfig() { document.getElementById('configModal').style.display = 'flex'; }
-    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-
-    function saveConfig() {
-        const token = document.getElementById('ghToken').value;
-        if (token) {
-            localStorage.setItem('gh_token', token);
-            currentToken = token;
-            closeModal('configModal');
-            document.getElementById('config-banner').style.display = 'none';
-            loadAppList();
-        }
-    }
-
-    async function loadAppList() {
-        const listContainer = document.getElementById('appList');
-        
-        // 即使没有 Token，也显示基础的两个（硬编码兜底）
-        const fallbackApps = [
-            { name: 'calculator', title: '🔢 在线计算器' },
-            { name: 'kinship', title: '🧧 亲戚称呼查询' }
-        ];
-
-        try {
-            if (!currentToken) throw new Error('No token');
-
-            const res = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/`, {
-                headers: { 'Authorization': `Bearer ${currentToken}` }
-            });
-            
-            if (!res.ok) throw new Error('API failed');
-            
-            const contents = await res.json();
-            const folders = contents
-                .filter(item => item.type === 'dir' && item.name !== 'skills' && item.name !== 'memory')
-                .map(item => ({ name: item.name, title: `📦 ${item.name}` }));
-
-            renderList(folders.length > 0 ? folders : fallbackApps);
-        } catch (e) {
-            renderList(fallbackApps);
-            if (!currentToken) document.getElementById('config-banner').style.display = 'flex';
-        }
-    }
-
-    function renderList(apps) {
-        const listContainer = document.getElementById('appList');
-        listContainer.innerHTML = '';
-        apps.forEach(app => {
-            const div = document.createElement('div');
-            div.className = 'nav-item';
-            div.innerHTML = `<span>${app.title}</span> <span style="font-size:12px; opacity:0.5">〉</span>`;
-            div.onclick = () => previewApp(app.name, div);
-            listContainer.appendChild(div);
-        });
-    }
-
     function previewApp(name, element) {
-        // 更新 UI 选中状态
+        // 更新 UI 状态
         document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
         element.classList.add('active');
 
-        // 加载 Iframe
         const iframe = document.getElementById('preview-iframe');
-        const welcome = document.getElementById('welcome-msg');
+        const empty = document.getElementById('empty-state');
+        const topBar = document.getElementById('topBar');
+        const urlDisplay = document.getElementById('currentUrl');
+        const titleDisplay = document.getElementById('currentTitle');
         
-        welcome.style.display = 'none';
+        const path = `./${name}/index.html`;
+        
+        empty.style.display = 'none';
         iframe.style.display = 'block';
-        iframe.src = `./${name}/index.html`;
-    }
-
-    async function handleUpload() {
-        const appName = document.getElementById('appName').value.trim();
-        const fileInput = document.getElementById('fileInput');
-        const status = document.getElementById('upload-status');
-        const btn = document.getElementById('uploadBtn');
-
-        if (!currentToken || !appName || !fileInput.files[0]) {
-            alert('请检查是否填写了名称、选择了文件并配置了 Token');
-            if(!currentToken) showConfig();
-            return;
-        }
-
-        btn.disabled = true;
-        status.innerText = '🚀 正在上传文件...';
-        status.style.display = 'block';
-
-        const file = fileInput.files[0];
-        const reader = new FileReader();
-
-        reader.onload = async (e) => {
-            const content = e.target.result.split(',')[1];
-            try {
-                const res = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${appName}/index.html`, {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `Bearer ${currentToken}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        message: `Deploy ${appName}`,
-                        content: content
-                    })
-                });
-
-                if (res.ok) {
-                    status.innerText = '✅ 部署成功！正在刷新列表...';
-                    setTimeout(() => {
-                        closeModal('uploadModal');
-                        loadAppList();
-                        status.style.display = 'none';
-                        btn.disabled = false;
-                    }, 1500);
-                } else {
-                    const err = await res.json();
-                    throw new Error(err.message);
-                }
-            } catch (err) {
-                status.innerText = '❌ 错误: ' + err.message;
-                btn.disabled = false;
-            }
-        };
-        reader.readAsDataURL(file);
+        iframe.src = path;
+        
+        topBar.style.display = 'flex';
+        titleDisplay.innerText = element.innerText.trim();
+        urlDisplay.innerText = window.location.origin + window.location.pathname + name + '/';
     }
 </script>
 
