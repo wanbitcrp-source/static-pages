@@ -3,148 +3,252 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML 静态托管平台</title>
+    <title>HTML 托管平台 - 预览版</title>
     <style>
-        :root { --primary: #2563eb; --bg: #f8fafc; }
-        body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: #1e293b; line-height: 1.5; padding: 2rem; }
-        .container { max-width: 800px; margin: 0 auto; }
-        header { text-align: center; margin-bottom: 3rem; }
-        h1 { font-size: 2.25rem; font-weight: 800; color: #0f172a; margin-bottom: 0.5rem; }
+        :root { --sidebar-width: 300px; --primary: #2563eb; }
+        body, html { margin: 0; padding: 0; height: 100%; font-family: system-ui, sans-serif; overflow: hidden; }
         
-        .upload-card { background: white; padding: 2rem; border-radius: 1rem; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); margin-bottom: 3rem; border: 2px dashed #cbd5e1; }
-        .upload-card h2 { margin-top: 0; font-size: 1.25rem; margin-bottom: 1.5rem; }
-        .form-group { margin-bottom: 1rem; }
-        label { display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem; }
-        input[type="text"], input[type="file"], input[type="password"] { width: 100%; padding: 0.625rem; border: 1px solid #d1d5db; border-radius: 0.5rem; box-sizing: border-box; }
-        button { background: var(--primary); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 600; cursor: pointer; width: 100%; transition: opacity 0.2s; }
-        button:disabled { opacity: 0.5; cursor: not-allowed; }
+        .layout { display: flex; height: 100vh; }
+        
+        /* 侧边栏 */
+        .sidebar { width: var(--sidebar-width); background: #f8fafc; border-right: 1px solid #e2e8f0; display: flex; flex-direction: column; }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid #e2e8f0; background: white; }
+        .sidebar-header h1 { font-size: 1.25rem; margin: 0; color: #0f172a; }
+        
+        .nav-list { flex: 1; overflow-y: auto; padding: 10px; }
+        .nav-item { padding: 12px 15px; border-radius: 8px; cursor: pointer; margin-bottom: 5px; color: #475569; transition: all 0.2s; border: 1px solid transparent; display: flex; justify-content: space-between; align-items: center; }
+        .nav-item:hover { background: #e2e8f0; color: #0f172a; }
+        .nav-item.active { background: white; color: var(--primary); border-color: var(--primary); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        
+        .upload-btn { margin: 15px; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; text-align: center; }
 
-        .app-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1.5rem; }
-        .app-card { background: white; padding: 1.5rem; border-radius: 0.75rem; border: 1px solid #e2e8f0; text-decoration: none; color: inherit; transition: all 0.2s; }
-        .app-card:hover { border-color: var(--primary); transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1); }
-        .app-card h3 { margin: 0; font-size: 1.125rem; color: var(--primary); }
-        .app-card p { margin: 0.5rem 0 0; font-size: 0.875rem; color: #64748b; }
+        /* 主显示区 */
+        .main-content { flex: 1; background: #fff; display: flex; flex-direction: column; position: relative; }
+        iframe { border: none; width: 100%; height: 100%; flex: 1; background: #fff; }
         
-        #status { margin-top: 1rem; font-size: 0.875rem; padding: 1rem; border-radius: 0.5rem; display: none; }
-        .success { background: #dcfce7; color: #166534; display: block !important; }
-        .error { background: #fee2e2; color: #991b1b; display: block !important; }
+        .welcome { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: #94a3b8; text-align: center; padding: 20px; }
+        .welcome h2 { color: #475569; margin-bottom: 10px; }
+
+        /* 上传弹窗 */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 100; align-items: center; justify-content: center; }
+        .modal-content { background: white; padding: 30px; border-radius: 12px; width: 400px; box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1); }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 5px; }
+        input { width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; }
+        .modal-actions { display: flex; gap: 10px; margin-top: 20px; }
+        .btn-cancel { background: #e2e8f0; color: #475569; border: none; padding: 10px; flex: 1; border-radius: 6px; cursor: pointer; }
+        .btn-submit { background: var(--primary); color: white; border: none; padding: 10px; flex: 2; border-radius: 6px; cursor: pointer; }
+
+        #config-banner { background: #fffbeb; border-bottom: 1px solid #fef3c7; padding: 10px 20px; font-size: 13px; color: #92400e; display: flex; justify-content: space-between; align-items: center; }
+        #config-banner button { background: none; border: 1px solid #d97706; color: #d97706; padding: 2px 8px; border-radius: 4px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <header>
-        <h1>🚀 HTML 托管平台</h1>
-        <p>上传 HTML 文件，即刻全网访问</p>
-    </header>
+<div class="layout">
+    <!-- 侧边栏 -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h1>🚀 HTML 托管平台</h1>
+        </div>
+        
+        <div id="config-banner" style="display:none;">
+            <span>需要配置 GitHub Token 以加载列表</span>
+            <button onclick="showConfig()">设置</button>
+        </div>
 
-    <div class="upload-card">
-        <h2>📤 上传新页面</h2>
-        <div class="form-group">
-            <label>GitHub 令牌 (PAT)</label>
-            <input type="password" id="token" placeholder="输入你的 github_pat_..." value="">
-            <p style="font-size: 12px; color: #64748b;">令牌保存在浏览器本地，仅用于上传代码。</p>
+        <button class="upload-btn" onclick="showUploadModal()">+ 上传新页面</button>
+        
+        <div class="nav-list" id="appList">
+            <div style="text-align:center; padding: 20px; color: #94a3b8;">正在加载内容...</div>
         </div>
-        <div class="form-group">
-            <label>应用名称 (文件夹名)</label>
-            <input type="text" id="appName" placeholder="例如：my-game">
-        </div>
-        <div class="form-group">
-            <label>选择 HTML 文件</label>
-            <input type="file" id="fileInput" accept=".html">
-        </div>
-        <button id="uploadBtn" onclick="handleUpload()">开始部署</button>
-        <div id="status"></div>
     </div>
 
-    <h2>📦 已托管的应用</h2>
-    <div class="app-list" id="appList">
-        <!-- 动态加载 -->
-        <a href="calculator/" class="app-card">
-            <h3>🔢 在线计算器</h3>
-            <p>基础数学工具</p>
-        </a>
-        <a href="kinship/" class="app-card">
-            <h3>🧧 亲戚称呼查询</h3>
-            <p>过年必备指南</p>
-        </a>
+    <!-- 主显示区 -->
+    <div class="main-content">
+        <div id="preview-area" style="height: 100%;">
+            <div class="welcome" id="welcome-msg">
+                <h2>🔍 内容检查器</h2>
+                <p>从左侧选择一个页面进行预览</p>
+                <p style="font-size: 13px;">(新上传的页面可能需要 1 分钟左右才能在这里预览)</p>
+            </div>
+            <iframe id="preview-iframe" style="display:none;"></iframe>
+        </div>
+    </div>
+</div>
+
+<!-- 上传弹窗 -->
+<div class="modal" id="uploadModal">
+    <div class="modal-content">
+        <h2 style="margin-top:0;">📤 部署新页面</h2>
+        <div class="form-group">
+            <label>应用名称 (英文文件夹名)</label>
+            <input type="text" id="appName" placeholder="例如: my-cool-app">
+        </div>
+        <div class="form-group">
+            <label>HTML 文件</label>
+            <input type="file" id="fileInput" accept=".html">
+        </div>
+        <div class="modal-actions">
+            <button class="btn-cancel" onclick="closeModal('uploadModal')">取消</button>
+            <button class="btn-submit" id="uploadBtn" onclick="handleUpload()">开始部署</button>
+        </div>
+        <p id="upload-status" style="font-size: 12px; margin-top: 10px; color: #2563eb; display:none;"></p>
+    </div>
+</div>
+
+<!-- 配置弹窗 -->
+<div class="modal" id="configModal">
+    <div class="modal-content">
+        <h2 style="margin-top:0;">⚙️ 配置 Token</h2>
+        <p style="font-size: 13px; color: #64748b;">为了列出你的所有应用，我们需要你的 GitHub PAT。</p>
+        <div class="form-group">
+            <label>GitHub Token (PAT)</label>
+            <input type="password" id="ghToken" placeholder="github_pat_...">
+        </div>
+        <div class="modal-actions">
+            <button class="btn-cancel" onclick="closeModal('configModal')">关闭</button>
+            <button class="btn-submit" onclick="saveConfig()">保存配置</button>
+        </div>
     </div>
 </div>
 
 <script>
-    // 初始化 Token (如果本地有存过)
-    document.getElementById('token').value = localStorage.getItem('gh_token') || '';
+    const OWNER = 'wanbitcrp-source';
+    const REPO = 'static-pages';
+    let currentToken = localStorage.getItem('gh_token') || '';
+
+    // 初始化加载
+    window.onload = () => {
+        if (!currentToken) {
+            document.getElementById('config-banner').style.display = 'flex';
+        }
+        loadAppList();
+    };
+
+    function showUploadModal() { document.getElementById('uploadModal').style.display = 'flex'; }
+    function showConfig() { document.getElementById('configModal').style.display = 'flex'; }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+    function saveConfig() {
+        const token = document.getElementById('ghToken').value;
+        if (token) {
+            localStorage.setItem('gh_token', token);
+            currentToken = token;
+            closeModal('configModal');
+            document.getElementById('config-banner').style.display = 'none';
+            loadAppList();
+        }
+    }
+
+    async function loadAppList() {
+        const listContainer = document.getElementById('appList');
+        
+        // 即使没有 Token，也显示基础的两个（硬编码兜底）
+        const fallbackApps = [
+            { name: 'calculator', title: '🔢 在线计算器' },
+            { name: 'kinship', title: '🧧 亲戚称呼查询' }
+        ];
+
+        try {
+            if (!currentToken) throw new Error('No token');
+
+            const res = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/`, {
+                headers: { 'Authorization': `Bearer ${currentToken}` }
+            });
+            
+            if (!res.ok) throw new Error('API failed');
+            
+            const contents = await res.json();
+            const folders = contents
+                .filter(item => item.type === 'dir' && item.name !== 'skills' && item.name !== 'memory')
+                .map(item => ({ name: item.name, title: `📦 ${item.name}` }));
+
+            renderList(folders.length > 0 ? folders : fallbackApps);
+        } catch (e) {
+            renderList(fallbackApps);
+            if (!currentToken) document.getElementById('config-banner').style.display = 'flex';
+        }
+    }
+
+    function renderList(apps) {
+        const listContainer = document.getElementById('appList');
+        listContainer.innerHTML = '';
+        apps.forEach(app => {
+            const div = document.createElement('div');
+            div.className = 'nav-item';
+            div.innerHTML = `<span>${app.title}</span> <span style="font-size:12px; opacity:0.5">〉</span>`;
+            div.onclick = () => previewApp(app.name, div);
+            listContainer.appendChild(div);
+        });
+    }
+
+    function previewApp(name, element) {
+        // 更新 UI 选中状态
+        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        element.classList.add('active');
+
+        // 加载 Iframe
+        const iframe = document.getElementById('preview-iframe');
+        const welcome = document.getElementById('welcome-msg');
+        
+        welcome.style.display = 'none';
+        iframe.style.display = 'block';
+        iframe.src = `./${name}/index.html`;
+    }
 
     async function handleUpload() {
-        const token = document.getElementById('token').value;
         const appName = document.getElementById('appName').value.trim();
         const fileInput = document.getElementById('fileInput');
-        const status = document.getElementById('status');
+        const status = document.getElementById('upload-status');
         const btn = document.getElementById('uploadBtn');
 
-        if (!token || !appName || !fileInput.files[0]) {
-            alert('请完整填写信息！');
+        if (!currentToken || !appName || !fileInput.files[0]) {
+            alert('请检查是否填写了名称、选择了文件并配置了 Token');
+            if(!currentToken) showConfig();
             return;
         }
 
-        localStorage.setItem('gh_token', token);
         btn.disabled = true;
-        btn.innerText = '正在上传到 GitHub...';
-        status.className = '';
-        status.innerText = '正在读取文件并联系 GitHub API...';
+        status.innerText = '🚀 正在上传文件...';
         status.style.display = 'block';
 
         const file = fileInput.files[0];
         const reader = new FileReader();
 
         reader.onload = async (e) => {
-            const content = e.target.result.split(',')[1]; // Base64 content
-            const path = `${appName}/index.html`;
-            const owner = 'wanbitcrp-source';
-            const repo = 'static-pages';
-
+            const content = e.target.result.split(',')[1];
             try {
-                // 1. 尝试上传文件 (PUT)
-                const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
+                const res = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${appName}/index.html`, {
                     method: 'PUT',
                     headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${currentToken}`,
+                        'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        message: `Upload ${appName} via web platform`,
+                        message: `Deploy ${appName}`,
                         content: content
                     })
                 });
 
-                if (response.ok) {
-                    status.className = 'success';
-                    status.innerHTML = `✅ 部署成功！<br>地址：<a href="${appName}/" target="_blank">点击访问 ${appName}</a><br>请等待 1 分钟左右生效。`;
-                    // 动态添加到列表 (仅当前预览)
-                    addCardToList(appName);
+                if (res.ok) {
+                    status.innerText = '✅ 部署成功！正在刷新列表...';
+                    setTimeout(() => {
+                        closeModal('uploadModal');
+                        loadAppList();
+                        status.style.display = 'none';
+                        btn.disabled = false;
+                    }, 1500);
                 } else {
-                    const err = await response.json();
-                    throw new Error(err.message || '上传失败');
+                    const err = await res.json();
+                    throw new Error(err.message);
                 }
-            } catch (error) {
-                status.className = 'error';
-                status.innerText = '❌ 错误: ' + error.message;
-            } finally {
+            } catch (err) {
+                status.innerText = '❌ 错误: ' + err.message;
                 btn.disabled = false;
-                btn.innerText = '开始部署';
             }
         };
-
         reader.readAsDataURL(file);
-    }
-
-    function addCardToList(name) {
-        const list = document.getElementById('appList');
-        const card = document.createElement('a');
-        card.className = 'app-card';
-        card.href = `${name}/`;
-        card.innerHTML = `<h3>🆕 ${name}</h3><p>刚刚部署的新应用</p>`;
-        list.prepend(card);
     }
 </script>
 
