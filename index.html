@@ -2,9 +2,8 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Claw Hosting | HTML 静态托管平台</title>
-    <!-- 引入现代字体 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -17,242 +16,72 @@
             --text-muted: #6b7280;
             --border: #e5e7eb;
             --accent: #f3f4f6;
-            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: 'Inter', -apple-system, sans-serif;
             background-color: var(--bg-main);
             color: var(--text-main);
             height: 100vh;
-            overflow: hidden;
             display: flex;
+            overflow: hidden;
         }
 
-        /* 侧边栏样式 */
+        /* 侧边栏 - 桌面端 */
         .sidebar {
             width: 320px;
             background-color: var(--bg-sidebar);
             border-right: 1px solid var(--border);
             display: flex;
             flex-direction: column;
-            transition: all 0.3s ease;
+            z-index: 20;
         }
 
-        .sidebar-header {
-            padding: 32px 24px 20px;
-        }
+        .sidebar-header { padding: 32px 24px 20px; }
+        .logo { display: flex; align-items: center; gap: 12px; font-size: 1.25rem; font-weight: 700; margin-bottom: 24px; }
+        .logo-icon { width: 32px; height: 32px; background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; }
 
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--text-main);
-            margin-bottom: 24px;
-        }
+        .search-container { position: relative; margin-bottom: 20px; }
+        .search-input { width: 100%; padding: 10px 16px 10px 40px; background: white; border: 1px solid var(--border); border-radius: 10px; font-size: 14px; outline: none; }
+        .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
 
-        .logo-icon {
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 18px;
-        }
+        .nav-scroll { flex: 1; overflow-y: auto; padding: 0 16px 20px; }
+        .nav-group-title { font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--text-muted); margin: 20px 8px 8px; }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 10px; cursor: pointer; color: var(--text-main); font-size: 14px; font-weight: 500; margin-bottom: 4px; }
+        .nav-item:hover { background-color: var(--accent); }
+        .nav-item.active { background-color: white; color: var(--primary); box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid var(--border); }
 
-        .search-container {
-            position: relative;
-            margin-bottom: 20px;
-        }
+        .sidebar-footer { padding: 20px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-muted); }
 
-        .search-input {
-            width: 100%;
-            padding: 10px 16px 10px 40px;
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            font-size: 14px;
-            outline: none;
-            transition: border-color 0.2s;
-        }
+        /* 主内容区 */
+        .main { flex: 1; display: flex; flex-direction: column; background-color: #f3f4f6; position: relative; z-index: 10; }
+        .main-header { height: 64px; background: white; border-bottom: 1px solid var(--border); display: none; align-items: center; padding: 0 20px; justify-content: space-between; }
+        .back-btn { display: none; padding: 8px; background: none; border: none; font-size: 18px; cursor: pointer; }
 
-        .search-input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-        }
+        .content-frame { flex: 1; border: none; width: 100%; height: 100%; background: white; }
 
-        .search-icon {
-            position: absolute;
-            left: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-muted);
-            pointer-events: none;
-        }
+        .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; text-align: center; padding: 40px; }
 
-        .nav-scroll {
-            flex: 1;
-            overflow-y: auto;
-            padding: 0 16px 20px;
-        }
-
-        .nav-group-title {
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--text-muted);
-            margin: 20px 8px 8px;
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 12px;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.2s;
-            color: var(--text-main);
-            text-decoration: none;
-            margin-bottom: 4px;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .nav-item:hover {
-            background-color: var(--accent);
-        }
-
-        .nav-item.active {
-            background-color: white;
-            color: var(--primary);
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
-        }
-
-        .nav-item-icon {
-            font-size: 18px;
-            width: 24px;
-            text-align: center;
-        }
-
-        .sidebar-footer {
-            padding: 20px;
-            border-top: 1px solid var(--border);
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 4px 8px;
-            background: #ecfdf5;
-            color: #059669;
-            border-radius: 20px;
-            font-weight: 600;
-            margin-top: 8px;
-        }
-
-        .status-dot {
-            width: 6px;
-            height: 6px;
-            background: currentColor;
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
-        }
-
-        /* 主内容区样式 */
-        .main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background-color: #f3f4f6;
-            position: relative;
-        }
-
-        .main-header {
-            height: 64px;
-            background: white;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            padding: 0 24px;
-            justify-content: space-between;
-        }
-
-        .breadcrumb {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 14px;
-            color: var(--text-muted);
-        }
-
-        .breadcrumb b {
-            color: var(--text-main);
-        }
-
-        .external-link {
-            color: var(--primary);
-            text-decoration: none;
-            font-size: 13px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .content-frame {
-            flex: 1;
-            border: none;
-            background: white;
-            width: 100%;
-            height: 100%;
-        }
-
-        .empty-state {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-            text-align: center;
-            color: var(--text-muted);
-        }
-
-        .empty-state h2 {
-            color: var(--text-main);
-            margin-bottom: 12px;
-        }
-
-        /* 响应式 */
+        /* 移动端适配核心逻辑 */
         @media (max-width: 768px) {
-            .sidebar { width: 80px; }
-            .sidebar .logo span, .sidebar .search-container, .sidebar .nav-group-title, .sidebar .nav-item span, .sidebar-footer { display: none; }
-            .sidebar .nav-item { justify-content: center; }
+            body { flex-direction: column; }
+            .sidebar { width: 100%; height: 100%; border-right: none; position: absolute; top: 0; left: 0; transition: transform 0.3s ease; }
+            .sidebar.hidden { transform: translateX(-100%); }
+            
+            .main { width: 100%; height: 100%; position: absolute; top: 0; left: 0; transform: translateX(100%); transition: transform 0.3s ease; }
+            .main.active { transform: translateX(0); }
+            
+            .main-header { display: flex; }
+            .back-btn { display: block; }
+            .sidebar-header { padding: 24px 20px 10px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- 侧边栏 -->
-    <aside class="sidebar">
+    <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <div class="logo">
                 <div class="logo-icon">C</div>
@@ -263,76 +92,71 @@
                 <input type="text" class="search-input" id="search" placeholder="搜索应用..." oninput="filterApps()">
             </div>
         </div>
-
         <nav class="nav-scroll" id="appList">
             <div class="nav-group-title">内容检查</div>
-            <a class="nav-item" onclick="selectApp('calculator', '🔢 在线计算器', this)">
-                <span class="nav-item-icon">🔢</span>
-                <span>在线计算器</span>
-            </a>
-            <a class="nav-item" onclick="selectApp('kinship', '🧧 亲戚称呼查询', this)">
-                <span class="nav-item-icon">🧧</span>
-                <span>亲戚称呼查询</span>
-            </a>
-        </nav>
-
-        <div class="sidebar-footer">
-            <p>由 Claw AI 强力驱动</p>
-            <div class="status-badge">
-                <div class="status-dot"></div>
-                系统状态：正常
+            <div class="nav-item" onclick="selectApp('calculator', '🔢 在线计算器')">
+                <span>🔢 在线计算器</span>
             </div>
+            <div class="nav-item" onclick="selectApp('kinship', '🧧 亲戚称呼查询')">
+                <span>🧧 亲戚称呼查询</span>
+            </div>
+        </nav>
+        <div class="sidebar-footer">
+            <p>系统状态：正常</p>
         </div>
     </aside>
 
-    <!-- 主内容区 -->
-    <main class="main">
-        <header class="main-header" id="mainHeader" style="display: none;">
-            <div class="breadcrumb">
-                应用 / <b id="activeAppName">未选择</b>
-            </div>
-            <a href="#" id="openLink" target="_blank" class="external-link">
-                在新标签页打开 ↗
-            </a>
+    <main class="main" id="main">
+        <header class="main-header">
+            <button class="back-btn" onclick="goBack()">🔙 返回列表</button>
+            <b id="activeAppName" style="font-size: 14px;">应用预览</b>
+            <div style="width: 40px;"></div> <!-- 占位平衡布局 -->
         </header>
 
         <div id="displayArea" style="height: 100%;">
             <div class="empty-state" id="emptyState">
-                <div style="font-size: 64px; margin-bottom: 24px;">📁</div>
-                <h2>欢迎使用内容检查器</h2>
-                <p>从左侧列表中选择一个项目以开始预览</p>
+                <div style="font-size: 48px; margin-bottom: 16px;">📁</div>
+                <h2>选择项目进行预览</h2>
+                <p style="color:var(--text-muted); font-size: 14px;">点击左侧列表查看内容</p>
             </div>
             <iframe id="previewFrame" class="content-frame" style="display: none;"></iframe>
         </div>
     </main>
 
     <script>
-        function selectApp(folder, title, el) {
-            // UI 更新
-            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-            el.classList.add('active');
-
-            // 头部更新
-            document.getElementById('mainHeader').style.display = 'flex';
-            document.getElementById('activeAppName').innerText = title;
+        function selectApp(folder, title) {
+            const isMobile = window.innerWidth <= 768;
             
-            const fullUrl = window.location.origin + window.location.pathname + folder + '/';
-            document.getElementById('openLink').href = fullUrl;
-
-            // 内容预览更新
-            document.getElementById('emptyState').style.display = 'none';
+            document.getElementById('activeAppName').innerText = title;
             const frame = document.getElementById('previewFrame');
+            const empty = document.getElementById('emptyState');
+            
+            empty.style.display = 'none';
             frame.style.display = 'block';
             frame.src = `./${folder}/index.html`;
+
+            if (isMobile) {
+                document.getElementById('sidebar').classList.add('hidden');
+                document.getElementById('main').classList.add('active');
+            }
+        }
+
+        function goBack() {
+            document.getElementById('sidebar').classList.remove('hidden');
+            document.getElementById('main').classList.remove('active');
+            // 延迟清空 iframe 防止返回时闪烁
+            setTimeout(() => {
+                document.getElementById('previewFrame').src = '';
+                document.getElementById('previewFrame').style.display = 'none';
+                document.getElementById('emptyState').style.display = 'flex';
+            }, 300);
         }
 
         function filterApps() {
             const query = document.getElementById('search').value.toLowerCase();
             const items = document.querySelectorAll('.nav-item');
-            
             items.forEach(item => {
-                const text = item.innerText.toLowerCase();
-                item.style.display = text.includes(query) ? 'flex' : 'none';
+                item.style.display = item.innerText.toLowerCase().includes(query) ? 'flex' : 'none';
             });
         }
     </script>
