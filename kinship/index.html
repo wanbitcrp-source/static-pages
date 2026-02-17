@@ -33,8 +33,8 @@
 
         .app {
             width: 100%;
-            max-width: 420px;
-            height: 92vh;
+            max-width: 440px;
+            height: 95vh;
             background: var(--card);
             border-radius: 40px;
             box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15);
@@ -47,18 +47,18 @@
         .screen {
             padding: 30px 25px 15px;
             text-align: right;
-            min-height: 180px;
+            min-height: 160px;
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
             background: #FFFFFF;
         }
 
-        .formula { font-size: 14px; color: var(--text-secondary); margin-bottom: 5px; }
+        .formula { font-size: 14px; color: var(--text-secondary); margin-bottom: 5px; min-height: 1.2em; }
         .result-label { font-size: 11px; color: var(--primary); font-weight: 700; margin-bottom: 2px; }
-        .result { font-size: 40px; font-weight: 800; color: var(--text); line-height: 1.1; }
+        .result { font-size: 36px; font-weight: 800; color: var(--text); line-height: 1.1; }
 
-        .identity-box { padding: 0 20px 15px; }
+        .identity-box { padding: 0 20px 10px; }
         .mode-selector {
             display: flex;
             background: var(--btn-gray);
@@ -74,26 +74,27 @@
 
         .keypad {
             background: #F9F9F9;
-            padding: 15px;
+            padding: 12px;
             border-radius: 35px 35px 0 0;
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 6px;
             flex-grow: 1;
         }
 
         button {
-            border: none; height: 52px; border-radius: 15px; font-size: 16px; font-weight: 600;
-            cursor: pointer; background: white; color: var(--text); box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            border: none; height: 48px; border-radius: 12px; font-size: 14px; font-weight: 600;
+            cursor: pointer; background: white; color: var(--text); box-shadow: 0 1px 2px rgba(0,0,0,0.02);
         }
         button:active { transform: scale(0.92); background: var(--btn-gray); }
         button.op { color: var(--secondary); background: #EBF5FF; }
         button.del { color: var(--primary); background: #FFF0F0; }
-        button.special { background: #F2F2F7; font-size: 13px; color: var(--text-secondary); }
-        button.sex { grid-column: span 2; font-size: 13px; border: 1px solid var(--btn-gray); }
+        button.special { background: #F2F2F7; font-size: 11px; color: var(--text-secondary); }
+        button.sex { grid-column: span 2; font-size: 12px; border: 1px solid var(--btn-gray); }
         button.sex.active { background: var(--text); color: white; border-color: var(--text); }
+        button.full { grid-column: span 5; height: 40px; background: var(--secondary); color: white; font-size: 13px; }
 
-        .footer { padding: 10px; text-align: center; font-size: 9px; color: var(--text-secondary); background: #F9F9F9; }
+        .footer { padding: 8px; text-align: center; font-size: 9px; color: var(--text-secondary); background: #F9F9F9; }
     </style>
 </head>
 <body>
@@ -113,39 +114,44 @@
     </div>
 
     <div class="keypad">
-        <button class="sex active" id="s-1" onclick="setSex(1)">我是男性 (爸爸)</button>
-        <button class="sex" id="s-0" onclick="setSex(0)">我是女性 (妈妈)</button>
-
+        <button class="sex active" id="s-1" onclick="setSex(1)">男视角(爸)</button>
+        <button class="sex" id="s-0" onclick="setSex(0)">女视角(妈)</button>
         <button class="del" onclick="clearAll()">AC</button>
+
+        <button class="op" onclick="add('父')">父</button>
+        <button class="op" onclick="add('母')">母</button>
+        <button class="op" onclick="add('兄')">兄</button>
+        <button class="op" onclick="add('弟')">弟</button>
         <button class="del" onclick="backspace()">⬅</button>
+
+        <button class="op" onclick="add('姐')">姐</button>
+        <button class="op" onclick="add('妹')">妹</button>
+        <button class="op" onclick="add('子')">子</button>
+        <button class="op" onclick="add('女')">女</button>
         <button class="op" onclick="add('夫')">夫</button>
+
         <button class="op" onclick="add('妻')">妻</button>
-
-        <button onclick="add('父')">父 (爸)</button>
-        <button onclick="add('母')">母 (妈)</button>
-        <button onclick="add('兄')">兄 (哥)</button>
-        <button onclick="add('弟')">弟 (弟)</button>
-
-        <button onclick="add('姐')">姐 (姐)</button>
-        <button onclick="add('妹')">妹 (妹)</button>
-        <button onclick="add('子')">子 (儿)</button>
-        <button onclick="add('女')">女 (女)</button>
-
-        <!-- 快捷路径 -->
+        <button class="special" onclick="shortcut('父兄')">伯父</button>
         <button class="special" onclick="shortcut('父弟')">叔叔</button>
-        <button class="special" onclick="shortcut('父兄')">伯伯</button>
         <button class="special" onclick="shortcut('父姐')">姑妈</button>
-        <button class="special" onclick="shortcut('母兄')">舅舅</button>
-        
+        <button class="special" onclick="shortcut('父妹')">姑姐</button>
+
+        <button class="special" onclick="shortcut('母兄')">大舅</button>
+        <button class="special" onclick="shortcut('母弟')">小舅</button>
         <button class="special" onclick="shortcut('母姐')">姨妈</button>
+        <button class="special" onclick="shortcut('母妹')">姨姐</button>
         <button class="special" onclick="shortcut('父父')">爷爷</button>
+
+        <button class="special" onclick="shortcut('父母')">奶奶</button>
         <button class="special" onclick="shortcut('母父')">外公</button>
         <button class="special" onclick="shortcut('母母')">外婆</button>
+        <button class="special" onclick="shortcut('父父父')">太爷</button>
+        <button class="special" onclick="shortcut('父母母')">太奶</button>
 
-        <button class="op" style="grid-column: span 4; background: var(--secondary); color: white;" onclick="calculate()">= 确认计算</button>
+        <button class="full" onclick="calculate()">= 确认计算关系</button>
     </div>
     
-    <div class="footer">CLAW RELATIONS ENGINE v3.0</div>
+    <div class="footer">CLAW RELATIONS ENGINE v4.0 - 覆盖 99% 常用称呼</div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/relationship.js/dist/relationship.min.js"></script>
@@ -181,11 +187,6 @@
     function add(r) {
         chain += r;
         update();
-        if ('speechSynthesis' in window) {
-            const u = new SpeechSynthesisUtterance(r);
-            u.lang = 'zh-CN';
-            window.speechSynthesis.speak(u);
-        }
     }
 
     function clearAll() { chain = ''; update(); }
@@ -206,10 +207,10 @@
 
         if (res && res.length > 0) {
             rEl.innerText = res[0];
-            rEl.style.fontSize = res[0].length > 4 ? '28px' : '40px';
+            rEl.style.fontSize = res[0].length > 6 ? '24px' : (res[0].length > 4 ? '30px' : '36px');
         } else {
-            rEl.innerText = chain ? '太复杂了' : (mode === 'me' ? '自己' : '爸爸/妈妈');
-            rEl.style.fontSize = '40px';
+            rEl.innerText = chain ? '太复杂，需拆分' : (mode === 'me' ? '自己' : '爸爸/妈妈');
+            rEl.style.fontSize = '36px';
         }
     }
 </script>
