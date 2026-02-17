@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>亲戚称呼计算器 | 逻辑版</title>
+    <title>亲戚关系计算器 | 增强版</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -35,36 +35,64 @@
             max-width: 480px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 16px;
         }
 
-        header { text-align: center; padding: 20px 0; }
+        header { text-align: center; padding: 10px 0; }
         h1 { font-size: 24px; font-weight: 800; color: #111827; }
 
         .display-screen {
             background: #111827;
             color: #ffffff;
-            padding: 24px;
+            padding: 20px;
             border-radius: var(--border-radius);
-            min-height: 120px;
+            min-height: 140px;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            gap: 8px;
+            gap: 4px;
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
         }
 
-        .formula { font-size: 14px; color: #9ca3af; word-break: break-all; }
-        .result { font-size: 32px; font-weight: 700; color: #ef4444; }
+        .formula { font-size: 14px; color: #9ca3af; word-break: break-all; min-height: 1.5em; }
+        .result { font-size: 28px; font-weight: 700; color: #ef4444; margin-top: 4px; }
+        .hint { font-size: 12px; color: #6b7280; margin-top: 8px; border-top: 1px solid #374151; padding-top: 8px; }
+
+        .view-switch {
+            display: flex;
+            gap: 8px;
+            background: #e5e7eb;
+            padding: 4px;
+            border-radius: 12px;
+        }
+
+        .view-btn {
+            flex: 1;
+            padding: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            background: transparent;
+            color: var(--text-light);
+        }
+
+        .view-btn.active {
+            background: white;
+            color: var(--primary);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
 
         .btn-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
+            gap: 8px;
         }
 
-        button {
-            padding: 20px 10px;
+        button.key {
+            padding: 18px 5px;
             border-radius: 12px;
             border: 1px solid rgba(0,0,0,0.05);
             background: white;
@@ -74,20 +102,18 @@
             transition: var(--transition);
         }
 
-        button:active { transform: scale(0.95); background: #f3f4f6; }
-        
-        button.view-btn.active { background: var(--primary); color: white; }
-        button.view-btn { background: #e5e7eb; color: var(--text-dark); }
+        button.key:active { transform: scale(0.95); background: #f3f4f6; }
         
         button.op { background: #fee2e2; color: var(--primary); }
         button.action { background: var(--primary); color: white; grid-column: span 2; }
         button.clear { background: #374151; color: white; }
 
-        .history {
-            margin-top: 10px;
+        .footer-info {
             font-size: 12px;
             color: var(--text-light);
             text-align: center;
+            margin-top: 10px;
+            line-height: 1.5;
         }
     </style>
 </head>
@@ -101,45 +127,60 @@
     <div class="display-screen">
         <div class="formula" id="formula">我</div>
         <div class="result" id="result">自己</div>
-        <div class="hint" id="hint" style="font-size: 12px; color: #6b7280; margin-top: 4px;">当前视角：我的...</div>
+        <div class="hint" id="hint">当前视角：我的直系关系</div>
     </div>
 
-    <div class="view-switch" style="display: flex; gap: 10px; margin-bottom: 10px;">
-        <button id="view-me" class="view-btn active" onclick="setView('me')" style="flex: 1; padding: 10px; font-size: 14px;">我的视角</button>
-        <button id="view-child" class="view-btn" onclick="setView('child')" style="flex: 1; padding: 10px; font-size: 14px;">孩子视角</button>
+    <div class="view-switch">
+        <button id="view-me" class="view-btn active" onclick="setView('me')">我的视角</button>
+        <button id="view-child" class="view-btn" onclick="setView('child')">孩子视角</button>
     </div>
 
     <div class="btn-grid">
-        <button onclick="addRelation('父')">父</button>
-        <button onclick="addRelation('母')">母</button>
-        <button class="clear" onclick="backspace()">⬅</button>
-        <button class="clear" onclick="clearAll()">AC</button>
+        <button class="key" onclick="addRelation('的爸爸')">父</button>
+        <button class="key" onclick="addRelation('的妈妈')">母</button>
+        <button class="key clear" onclick="backspace()">⬅</button>
+        <button class="key clear" onclick="clearAll()">AC</button>
         
-        <button onclick="addRelation('夫')">夫</button>
-        <button onclick="addRelation('妻')">妻</button>
-        <button onclick="addRelation('兄')">兄</button>
-        <button onclick="addRelation('弟')">弟</button>
+        <button class="key" onclick="addRelation('的老公')">夫</button>
+        <button class="key" onclick="addRelation('的老婆')">妻</button>
+        <button class="key" onclick="addRelation('的哥哥')">兄</button>
+        <button class="key" onclick="addRelation('的弟弟')">弟</button>
         
-        <button onclick="addRelation('姐')">姐</button>
-        <button onclick="addRelation('妹')">妹</button>
-        <button onclick="addRelation('子')">子</button>
-        <button onclick="addRelation('女')">女</button>
+        <button class="key" onclick="addRelation('的姐姐')">姐</button>
+        <button class="key" onclick="addRelation('的妹妹')">妹</button>
+        <button class="key" onclick="addRelation('的儿子')">子</button>
+        <button class="key" onclick="addRelation('的女儿')">女</button>
 
-        <button class="action" onclick="toggleSex(1)">我是男性</button>
-        <button class="action" onclick="toggleSex(0)">我是女性</button>
+        <button class="key action" id="sex-1" onclick="setSex(1)" style="border: 2px solid white;">我是男性</button>
+        <button class="key action" id="sex-0" onclick="setSex(0)" style="background: #fb7185;">我是女性</button>
     </div>
 
-    <div class="history">
-        提示：点击“父”、“母”等关系按钮进行叠加计算
+    <div class="footer-info">
+        提示：点击按钮叠加关系，如“父”+“兄”=“伯父”<br>
+        切换视角可快速计算晚辈对称谓的叫法
     </div>
 </div>
 
-<!-- 引入开源的关系计算库 -->
-<script src="https://cdn.jsdelivr.net/npm/relationship.js/dist/relationship.min.js"></script>
+<!-- 引入另一个更稳定的库 pass-kinship -->
+<script src="https://cdn.jsdelivr.net/npm/common-kinship/dist/kinship.min.js"></script>
 <script>
-    let currentFormula = '';
+    // 兼容层：如果 kinship 库加载方式不同，定义一个包装器
+    function getRelationship(text, sex) {
+        try {
+            // common-kinship 默认导出到 window.kinship
+            if (window.kinship) {
+                return window.kinship(text, { mode: 'normal', sex: sex });
+            }
+            return null;
+        } catch(e) {
+            console.error(e);
+            return null;
+        }
+    }
+
+    let currentChain = ''; // 存储如 "的爸爸的弟弟"
     let isMale = 1;
-    let baseView = 'me'; // 'me' or 'child'
+    let baseView = 'me';
 
     const formulaEl = document.getElementById('formula');
     const resultEl = document.getElementById('result');
@@ -149,54 +190,57 @@
         baseView = view;
         document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
         document.getElementById('view-' + view).classList.add('active');
-        hintEl.innerText = view === 'me' ? '当前视角：我的...' : '当前视角：孩子的...';
+        updateDisplay();
+    }
+
+    function setSex(s) {
+        isMale = s;
+        document.getElementById('sex-1').style.border = s ? '2px solid #111827' : 'none';
+        document.getElementById('sex-0').style.border = !s ? '2px solid #111827' : 'none';
         updateDisplay();
     }
 
     function updateDisplay() {
-        let prefix = baseView === 'me' ? '我' : '我的子/女';
-        let formulaText = currentFormula ? prefix + '的' + currentFormula.split('').join('的') : prefix;
-        formulaEl.innerText = formulaText;
+        let displayPrefix = baseView === 'me' ? '我' : '我的孩子';
+        formulaEl.innerText = displayPrefix + currentChain;
         
-        // 如果是孩子视角，在计算链条前加上 "子"
-        let calcFormula = baseView === 'child' ? '子' + currentFormula : currentFormula;
+        // 构建用于查询的文本
+        // 孩子视角：我的孩子对[我的...]的称呼 -> 等于计算 "我的儿子的..."
+        let queryText = baseView === 'me' ? '我' + currentChain : '我的儿子' + currentChain;
         
-        const options = {
-            text: calcFormula,
-            sex: isMale,
-            reverse: false,
-            type: 'chain'
-        };
+        let res = getRelationship(queryText, isMale);
         
-        const res = relationship(options);
-        if (res && res.length > 0) {
-            resultEl.innerText = res[0];
+        if (res) {
+            resultEl.innerText = res;
+            hintEl.innerText = `视角：${baseView === 'me' ? '我' : '孩子'} ➜ ${res}`;
         } else {
-            resultEl.innerText = calcFormula ? '太远了，不知道' : '自己';
+            resultEl.innerText = currentChain ? '关系太远啦' : (baseView === 'me' ? '自己' : '孩子');
+            hintEl.innerText = '请继续点击按钮添加关系';
         }
     }
 
     function addRelation(r) {
-        currentFormula += r;
+        currentChain += r;
         updateDisplay();
-        // 语音播报
-        speak(r);
+        speak(r.replace('的', ''));
     }
 
     function clearAll() {
-        currentFormula = '';
+        currentChain = '';
         updateDisplay();
     }
 
     function backspace() {
-        currentFormula = currentFormula.slice(0, -1);
+        // 移除最后一段 "的xx"
+        const parts = currentChain.split('的');
+        if (parts.length > 1) {
+            parts.pop();
+            currentChain = parts.join('的');
+            if (currentChain) currentChain = '的' + currentChain.replace(/^的/, '');
+        } else {
+            currentChain = '';
+        }
         updateDisplay();
-    }
-
-    function toggleSex(s) {
-        isMale = s;
-        updateDisplay();
-        alert('已切换为' + (s ? '男性' : '女性') + '视角');
     }
 
     function speak(text) {
@@ -206,6 +250,9 @@
             window.speechSynthesis.speak(utterance);
         }
     }
+
+    // 初始化显示
+    setSex(1);
 </script>
 
 </body>
