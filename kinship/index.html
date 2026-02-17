@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>亲戚关系链助手 | 自由定义版</title>
+    <title>亲戚称呼专家 | 自由链路版</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -15,245 +15,116 @@
             --text-secondary: #8E8E93;
             --border: #E5E5EA;
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
-        body {
-            font-family: 'Inter', -apple-system, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            display: flex;
-            justify-content: center;
-            min-height: 100vh;
-        }
-
-        .app {
-            width: 100%;
-            max-width: 500px;
-            background: white;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 0 20px rgba(0,0,0,0.05);
-        }
-
-        /* 顶部标题 */
-        header {
-            padding: 20px;
-            border-bottom: 1px solid var(--border);
-            text-align: center;
-        }
+        body { font-family: 'Inter', -apple-system, sans-serif; background-color: var(--bg); color: var(--text); display: flex; justify-content: center; min-height: 100vh; }
+        .app { width: 100%; max-width: 500px; background: white; display: flex; flex-direction: column; box-shadow: 0 0 20px rgba(0,0,0,0.05); }
+        header { padding: 20px; border-bottom: 1px solid var(--border); text-align: center; }
         h1 { font-size: 18px; font-weight: 700; }
-
-        /* 路径构建器 */
-        .path-builder {
-            padding: 24px;
-            background: #fff;
-            flex-grow: 1;
-        }
-
-        .step {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 20px;
-            position: relative;
-        }
-
-        .step::after {
-            content: "";
-            position: absolute;
-            left: 17px;
-            top: 35px;
-            width: 2px;
-            height: 20px;
-            background: var(--border);
-        }
-
-        .step:last-child::after { display: none; }
-
-        .step-num {
-            width: 36px;
-            height: 36px;
-            background: var(--bg);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--text-secondary);
-            border: 2px solid var(--border);
-            flex-shrink: 0;
-            z-index: 1;
-        }
-
-        .step.active .step-num {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-
-        .step-content {
-            flex-grow: 1;
-        }
-
-        .select-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 8px;
-        }
-
-        .chip {
-            padding: 8px 16px;
-            background: var(--bg);
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: 0.2s;
-            border: 1px solid var(--border);
-        }
-
-        .chip:hover { border-color: var(--primary); color: var(--primary); }
+        .path-builder { padding: 20px; background: #fff; flex-grow: 1; }
+        .section-title { font-size: 13px; font-weight: 700; color: var(--text-secondary); margin-bottom: 12px; }
+        .select-group { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+        .chip { padding: 10px 18px; background: var(--bg); border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); transition: 0.2s; }
         .chip.selected { background: var(--primary); color: white; border-color: var(--primary); }
-
-        /* 结果卡片 */
-        .result-card {
-            margin: 20px;
-            padding: 24px;
-            background: #F2F2F7;
-            border-radius: 20px;
-            text-align: center;
-        }
-
-        .res-label { font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; font-weight: 600; }
-        .res-value { font-size: 32px; font-weight: 800; color: var(--primary); }
-
-        .btn-reset {
-            margin: 0 20px 20px;
-            padding: 16px;
-            border: none;
-            background: var(--text);
-            color: white;
-            border-radius: 12px;
-            font-weight: 700;
-            cursor: pointer;
-        }
+        .chain-view { background: #F2F2F7; padding: 20px; border-radius: 16px; margin-bottom: 24px; border: 1px dashed var(--border); }
+        .chain-path { font-size: 15px; font-weight: 700; color: var(--primary); margin-bottom: 4px; }
+        .result-box { text-align: center; padding: 30px 20px; background: linear-gradient(135deg, #007AFF 0%, #0056b3 100%); border-radius: 20px; color: white; margin: 0 20px 20px; }
+        .res-label { font-size: 12px; opacity: 0.8; margin-bottom: 10px; }
+        .res-value { font-size: 36px; font-weight: 800; }
+        .btn-reset { margin: 0 20px 20px; padding: 16px; border: none; background: #E5E5EA; color: var(--text); border-radius: 12px; font-weight: 700; cursor: pointer; }
     </style>
 </head>
 <body>
-
 <div class="app">
-    <header>
-        <h1>亲戚关系链助手 (自由定义版)</h1>
-    </header>
-
-    <div class="path-builder" id="path-builder">
-        <!-- 步骤 1：谁在叫？ -->
-        <div class="step active">
-            <div class="step-num">1</div>
-            <div class="step-content">
-                <div style="font-size: 13px; font-weight: 600; color: var(--text-secondary);">称呼发起人 (我是谁？)</div>
-                <div class="select-group" id="root-select">
-                    <div class="chip selected" onclick="setRoot('我', 1)">我(男)</div>
-                    <div class="chip" onclick="setRoot('我', 0)">我(女)</div>
-                    <div class="chip" onclick="setRoot('儿子', 1)">儿子</div>
-                    <div class="chip" onclick="setRoot('女儿', 0)">女儿</div>
-                    <div class="chip" onclick="setRoot('老公', 1)">老公</div>
-                    <div class="chip" onclick="setRoot('老婆', 0)">老婆</div>
-                </div>
-            </div>
+    <header><h1>亲戚称呼专家 (自由链路版)</h1></header>
+    <div class="path-builder">
+        <div class="section-title">第一步：谁在叫人？(起点)</div>
+        <div class="select-group" id="root-select">
+            <div class="chip selected" onclick="setRoot('我', 1)">我(男)</div>
+            <div class="chip" onclick="setRoot('我', 0)">我(女)</div>
+            <div class="chip" onclick="setRoot('儿子', 1)">儿子</div>
+            <div class="chip" onclick="setRoot('女儿', 0)">女儿</div>
+            <div class="chip" onclick="setRoot('老公', 1)">老公</div>
+            <div class="chip" onclick="setRoot('老婆', 0)">老婆</div>
         </div>
-
-        <!-- 步骤 2：找谁？ -->
-        <div class="step active" id="relation-step">
-            <div class="step-num">2</div>
-            <div class="step-content">
-                <div style="font-size: 13px; font-weight: 600; color: var(--text-secondary);">他/她是发起人的... (点击添加关系链)</div>
-                <div class="select-group">
-                    <div class="chip" onclick="addRelation('父')">爸爸</div>
-                    <div class="chip" onclick="addRelation('母')">妈妈</div>
-                    <div class="chip" onclick="addRelation('兄')">哥哥</div>
-                    <div class="chip" onclick="addRelation('弟')">弟弟</div>
-                    <div class="chip" onclick="addRelation('姐')">姐姐</div>
-                    <div class="chip" onclick="addRelation('妹')">妹妹</div>
-                    <div class="chip" onclick="addRelation('夫')">丈夫</div>
-                    <div class="chip" onclick="addRelation('妻')">妻子</div>
-                </div>
-                <div id="chain-display" style="margin-top: 12px; font-size: 14px; color: var(--primary); font-weight: 600;">
-                    关系路径：未设置
-                </div>
-            </div>
+        <div class="section-title">第二步：TA是起点的谁？(关系链)</div>
+        <div class="select-group">
+            <div class="chip" onclick="add('父')">爸爸</div>
+            <div class="chip" onclick="add('母')">妈妈</div>
+            <div class="chip" onclick="add('兄')">哥哥</div>
+            <div class="chip" onclick="add('弟')">弟弟</div>
+            <div class="chip" onclick="add('姐')">姐姐</div>
+            <div class="chip" onclick="add('妹')">妹妹</div>
+            <div class="chip" onclick="add('夫')">丈夫</div>
+            <div class="chip" onclick="add('妻')">妻子</div>
+        </div>
+        <div class="chain-view">
+            <div class="section-title" style="margin-bottom:8px">当前构建的关系路径：</div>
+            <div class="chain-path" id="chain-path">我</div>
         </div>
     </div>
-
-    <div class="result-card">
-        <div class="res-label" id="res-label">最终称呼结果</div>
-        <div class="res-value" id="res-value">---</div>
+    <div class="result-box">
+        <div class="res-label" id="res-label">对方应该叫：</div>
+        <div class="res-value" id="res-value">自己</div>
     </div>
-
-    <button class="btn-reset" onclick="reset()">重新定义起点</button>
+    <button class="btn-reset" onclick="reset()">清空关系链</button>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/relationship.js/dist/relationship.min.js"></script>
 <script>
-    let rootPerson = '我';
-    let rootSex = 1;
-    let relationChain = '';
+// 简单的本地逻辑库，弥补外部库对非“我”视角支持不佳的问题
+const kinshipData = {
+    "我": {"自己": "我"},
+    "儿子": {"父": "爸爸", "母": "妈妈", "父父": "爷爷", "父母": "奶奶", "母父": "外公", "母母": "外婆", "父兄": "伯父", "父弟": "叔叔", "父姐": "姑妈", "父妹": "姑妈", "母兄": "舅舅", "母姐": "姨妈"},
+    "女儿": {"父": "爸爸", "母": "妈妈", "父父": "爷爷", "父母": "奶奶", "母父": "外公", "母母": "外婆", "父兄": "伯父", "父弟": "叔叔", "父姐": "姑妈", "父妹": "姑妈", "母兄": "舅舅", "母姐": "姨妈"},
+    "老婆": {"父": "爸爸", "母": "妈妈", "父兄": "伯伯", "父弟": "叔叔", "兄": "哥哥", "弟": "弟弟", "姐": "姐姐", "妹": "妹妹"},
+    "老公": {"父": "爸爸", "母": "妈妈", "兄": "哥哥", "弟": "弟弟", "姐": "姐姐", "妹": "妹妹"}
+};
 
-    function setRoot(name, sex) {
-        rootPerson = name;
-        rootSex = sex;
-        // 更新 UI
-        const chips = document.querySelectorAll('#root-select .chip');
-        chips.forEach(c => {
-            if(c.innerText.includes(name)) c.classList.add('selected');
-            else c.classList.remove('selected');
-        });
-        update();
+let root = '我';
+let chain = '';
+
+function setRoot(name, sex) {
+    root = name;
+    document.querySelectorAll('#root-select .chip').forEach(c => {
+        c.classList.toggle('selected', c.innerText.includes(name));
+    });
+    update();
+}
+
+function add(r) { chain += r; update(); }
+function reset() { chain = ''; update(); }
+
+function update() {
+    const pathEl = document.getElementById('chain-path');
+    const resEl = document.getElementById('res-value');
+    const labelEl = document.getElementById('res-label');
+    
+    pathEl.innerText = `${root} 的 ${chain.split('').join(' 的 ') || '...'}`;
+    labelEl.innerText = `${root} 对对方的称呼：`;
+
+    if (!chain) {
+        resEl.innerText = root === '我' ? '自己' : root;
+        return;
     }
 
-    function addRelation(r) {
-        relationChain += r;
-        update();
-    }
-
-    function reset() {
-        relationChain = '';
-        update();
-    }
-
-    function update() {
-        const displayEl = document.getElementById('chain-display');
-        const resEl = document.getElementById('res-value');
-        const labelEl = document.getElementById('res-label');
-
-        displayEl.innerText = `关系路径：${rootPerson} 的 ${relationChain.split('').join(' 的 ') || '...'}`;
-        labelEl.innerText = `${rootPerson} 应该叫对方：`;
-
-        // 核心逻辑：
-        // 1. 如果起点是“我”，直接算 chain
-        // 2. 如果起点是“儿子”，算 “子” + chain
-        // 3. 如果起点是“老婆”，算 “妻” + chain
-        let base = '';
-        if (rootPerson === '儿子') base = '子';
-        if (rootPerson === '女儿') base = '女';
-        if (rootPerson === '老婆') base = '妻';
-        if (rootPerson === '老公') base = '夫';
-
-        const res = relationship({
-            text: base + relationChain,
-            sex: rootSex,
-            type: 'chain'
-        });
-
-        if (res && res.length > 0) {
-            resEl.innerText = res[0];
-        } else {
-            resEl.innerText = relationChain ? '关系太远' : '请在步骤2添加关系';
+    // 尝试本地精准匹配
+    if (kinshipData[root] && kinshipData[root][chain]) {
+        resEl.innerText = kinshipData[root][chain];
+    } else {
+        // 如果本地没有，使用内置逻辑尝试推导
+        // 这里简化处理，直接提示或根据通用逻辑展示
+        resEl.innerText = "匹配中...";
+        // 动态加载外部库进行补充
+        if (window.relationship) {
+            let base = '';
+            if (root === '儿子') base = '子';
+            if (root === '女儿') base = '女';
+            if (root === '老婆') base = '妻';
+            if (root === '老公') base = '夫';
+            const r = relationship({text: base + chain, sex: 1, type: 'chain'});
+            resEl.innerText = (r && r.length) ? r[0] : "关系较远";
         }
     }
+}
 </script>
+<script src="https://cdn.jsdelivr.net/npm/relationship.js/dist/relationship.min.js" onload="update()"></script>
 </body>
 </html>
