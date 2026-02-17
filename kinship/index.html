@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>亲戚关系计算器 | 增强版</title>
+    <title>亲戚称呼计算器 | 稳定版</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -136,22 +136,22 @@
     </div>
 
     <div class="btn-grid">
-        <button class="key" onclick="addRelation('的爸爸')">父</button>
-        <button class="key" onclick="addRelation('的妈妈')">母</button>
+        <button class="key" onclick="addRelation('父')">父</button>
+        <button class="key" onclick="addRelation('母')">母</button>
         <button class="key clear" onclick="backspace()">⬅</button>
         <button class="key clear" onclick="clearAll()">AC</button>
         
-        <button class="key" onclick="addRelation('的老公')">夫</button>
-        <button class="key" onclick="addRelation('的老婆')">妻</button>
-        <button class="key" onclick="addRelation('的哥哥')">兄</button>
-        <button class="key" onclick="addRelation('的弟弟')">弟</button>
+        <button class="key" onclick="addRelation('夫')">夫</button>
+        <button class="key" onclick="addRelation('妻')">妻</button>
+        <button class="key" onclick="addRelation('兄')">兄</button>
+        <button class="key" onclick="addRelation('弟')">弟</button>
         
-        <button class="key" onclick="addRelation('的姐姐')">姐</button>
-        <button class="key" onclick="addRelation('的妹妹')">妹</button>
-        <button class="key" onclick="addRelation('的儿子')">子</button>
-        <button class="key" onclick="addRelation('的女儿')">女</button>
+        <button class="key" onclick="addRelation('姐')">姐</button>
+        <button class="key" onclick="addRelation('妹')">妹</button>
+        <button class="key" onclick="addRelation('子')">子</button>
+        <button class="key" onclick="addRelation('女')">女</button>
 
-        <button class="key action" id="sex-1" onclick="setSex(1)" style="border: 2px solid white;">我是男性</button>
+        <button class="key action" id="sex-1" onclick="setSex(1)">我是男性</button>
         <button class="key action" id="sex-0" onclick="setSex(0)" style="background: #fb7185;">我是女性</button>
     </div>
 
@@ -161,24 +161,10 @@
     </div>
 </div>
 
-<!-- 引入另一个更稳定的库 pass-kinship -->
-<script src="https://cdn.jsdelivr.net/npm/common-kinship/dist/kinship.min.js"></script>
+<!-- 重新加载更靠谱的 relationship.js -->
+<script src="https://cdn.jsdelivr.net/npm/relationship.js/dist/relationship.min.js"></script>
 <script>
-    // 兼容层：如果 kinship 库加载方式不同，定义一个包装器
-    function getRelationship(text, sex) {
-        try {
-            // common-kinship 默认导出到 window.kinship
-            if (window.kinship) {
-                return window.kinship(text, { mode: 'normal', sex: sex });
-            }
-            return null;
-        } catch(e) {
-            console.error(e);
-            return null;
-        }
-    }
-
-    let currentChain = ''; // 存储如 "的爸爸的弟弟"
+    let currentChain = ''; 
     let isMale = 1;
     let baseView = 'me';
 
@@ -202,27 +188,36 @@
 
     function updateDisplay() {
         let displayPrefix = baseView === 'me' ? '我' : '我的孩子';
-        formulaEl.innerText = displayPrefix + currentChain;
+        let formulaStr = currentChain.split('').join('的');
+        formulaEl.innerText = displayPrefix + (formulaStr ? '的' + formulaStr : '');
         
-        // 构建用于查询的文本
-        // 孩子视角：我的孩子对[我的...]的称呼 -> 等于计算 "我的儿子的..."
-        let queryText = baseView === 'me' ? '我' + currentChain : '我的儿子' + currentChain;
+        // 核心计算逻辑
+        // 如果是孩子视角，在前面加一个“子”
+        let query = baseView === 'child' ? '子' + currentChain : currentChain;
         
-        let res = getRelationship(queryText, isMale);
+        let res = relationship({
+            text: query,
+            sex: isMale,
+            type: 'chain'
+        });
         
-        if (res) {
-            resultEl.innerText = res;
-            hintEl.innerText = `视角：${baseView === 'me' ? '我' : '孩子'} ➜ ${res}`;
+        if (res && res.length > 0) {
+            resultEl.innerText = res[0];
+            hintEl.innerText = `计算成功：${res.join(' / ')}`;
         } else {
-            resultEl.innerText = currentChain ? '关系太远啦' : (baseView === 'me' ? '自己' : '孩子');
-            hintEl.innerText = '请继续点击按钮添加关系';
+            resultEl.innerText = currentChain ? '太远了，算不出来' : (baseView === 'me' ? '自己' : '孩子');
+            hintEl.innerText = '请尝试点击其他关系按钮';
         }
     }
 
     function addRelation(r) {
         currentChain += r;
         updateDisplay();
-        speak(r.replace('的', ''));
+        if ('speechSynthesis' in window) {
+            const utterance = new SpeechSynthesisUtterance(r);
+            utterance.lang = 'zh-CN';
+            window.speechSynthesis.speak(utterance);
+        }
     }
 
     function clearAll() {
@@ -231,27 +226,11 @@
     }
 
     function backspace() {
-        // 移除最后一段 "的xx"
-        const parts = currentChain.split('的');
-        if (parts.length > 1) {
-            parts.pop();
-            currentChain = parts.join('的');
-            if (currentChain) currentChain = '的' + currentChain.replace(/^的/, '');
-        } else {
-            currentChain = '';
-        }
+        currentChain = currentChain.slice(0, -1);
         updateDisplay();
     }
 
-    function speak(text) {
-        if ('speechSynthesis' in window) {
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'zh-CN';
-            window.speechSynthesis.speak(utterance);
-        }
-    }
-
-    // 初始化显示
+    // 初始化
     setSex(1);
 </script>
 
