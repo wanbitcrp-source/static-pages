@@ -76,6 +76,9 @@
 
         button:active { transform: scale(0.95); background: #f3f4f6; }
         
+        button.view-btn.active { background: var(--primary); color: white; }
+        button.view-btn { background: #e5e7eb; color: var(--text-dark); }
+        
         button.op { background: #fee2e2; color: var(--primary); }
         button.action { background: var(--primary); color: white; grid-column: span 2; }
         button.clear { background: #374151; color: white; }
@@ -98,6 +101,12 @@
     <div class="display-screen">
         <div class="formula" id="formula">我</div>
         <div class="result" id="result">自己</div>
+        <div class="hint" id="hint" style="font-size: 12px; color: #6b7280; margin-top: 4px;">当前视角：我的...</div>
+    </div>
+
+    <div class="view-switch" style="display: flex; gap: 10px; margin-bottom: 10px;">
+        <button id="view-me" class="view-btn active" onclick="setView('me')" style="flex: 1; padding: 10px; font-size: 14px;">我的视角</button>
+        <button id="view-child" class="view-btn" onclick="setView('child')" style="flex: 1; padding: 10px; font-size: 14px;">孩子视角</button>
     </div>
 
     <div class="btn-grid">
@@ -130,16 +139,30 @@
 <script>
     let currentFormula = '';
     let isMale = 1;
+    let baseView = 'me'; // 'me' or 'child'
 
     const formulaEl = document.getElementById('formula');
     const resultEl = document.getElementById('result');
+    const hintEl = document.getElementById('hint');
+
+    function setView(view) {
+        baseView = view;
+        document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById('view-' + view).classList.add('active');
+        hintEl.innerText = view === 'me' ? '当前视角：我的...' : '当前视角：孩子的...';
+        updateDisplay();
+    }
 
     function updateDisplay() {
-        const formulaText = currentFormula ? '我的' + currentFormula.split('').join('的') : '我';
+        let prefix = baseView === 'me' ? '我' : '我的子/女';
+        let formulaText = currentFormula ? prefix + '的' + currentFormula.split('').join('的') : prefix;
         formulaEl.innerText = formulaText;
         
+        // 如果是孩子视角，在计算链条前加上 "子"
+        let calcFormula = baseView === 'child' ? '子' + currentFormula : currentFormula;
+        
         const options = {
-            text: currentFormula,
+            text: calcFormula,
             sex: isMale,
             reverse: false,
             type: 'chain'
@@ -149,7 +172,7 @@
         if (res && res.length > 0) {
             resultEl.innerText = res[0];
         } else {
-            resultEl.innerText = currentFormula ? '太远了，不知道' : '自己';
+            resultEl.innerText = calcFormula ? '太远了，不知道' : '自己';
         }
     }
 
