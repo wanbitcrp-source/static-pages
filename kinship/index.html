@@ -3,20 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>亲戚称呼助手 | 过年必备</title>
-    <!-- 引入 Inter 字体 -->
+    <title>亲戚称呼计算器 | 逻辑版</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #ef4444; /* 更有质感的红色 */
+            --primary: #ef4444;
             --bg: #fdf2f2;
             --text-dark: #1f2937;
             --text-light: #6b7280;
             --card-bg: #ffffff;
             --border-radius: 16px;
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition: all 0.2s ease;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -25,7 +24,6 @@
             font-family: 'Inter', -apple-system, sans-serif;
             background-color: var(--bg);
             color: var(--text-dark);
-            line-height: 1.6;
             display: flex;
             justify-content: center;
             min-height: 100vh;
@@ -37,148 +35,56 @@
             max-width: 480px;
             display: flex;
             flex-direction: column;
-            gap: 24px;
+            gap: 20px;
         }
 
-        header {
-            text-align: center;
-            padding: 40px 0 20px;
-        }
+        header { text-align: center; padding: 20px 0; }
+        h1 { font-size: 24px; font-weight: 800; color: #111827; }
 
-        .badge {
-            display: inline-block;
-            background: #fee2e2;
-            color: var(--primary);
-            font-size: 12px;
-            font-weight: 700;
-            padding: 4px 12px;
-            border-radius: 20px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 12px;
-        }
-
-        h1 {
-            font-size: 28px;
-            font-weight: 800;
-            letter-spacing: -0.02em;
-            color: #111827;
-        }
-
-        .search-box {
-            position: sticky;
-            top: 10px;
-            z-index: 10;
-        }
-
-        .search-box input {
-            width: 100%;
-            padding: 16px 20px;
+        .display-screen {
+            background: #111827;
+            color: #ffffff;
+            padding: 24px;
             border-radius: var(--border-radius);
-            border: 1px solid rgba(239, 68, 68, 0.1);
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
-            font-size: 16px;
-            outline: none;
-            transition: var(--transition);
-        }
-
-        .search-box input:focus {
-            box-shadow: 0 10px 20px -5px rgba(239, 68, 68, 0.2);
-            border-color: var(--primary);
-        }
-
-        .grid {
-            display: grid;
-            gap: 12px;
-        }
-
-        .section-title {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--primary);
-            margin: 16px 0 8px;
+            min-height: 120px;
             display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .section-title::after {
-            content: "";
-            flex: 1;
-            height: 1px;
-            background: rgba(239, 68, 68, 0.1);
-        }
-
-        .card {
-            background: var(--card-bg);
-            padding: 20px;
-            border-radius: var(--border-radius);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: var(--transition);
-            border: 1px solid transparent;
-            cursor: pointer;
-        }
-
-        .card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
-            border-color: rgba(239, 68, 68, 0.1);
-        }
-
-        .card .info h3 {
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--text-light);
-            margin-bottom: 4px;
-        }
-
-        .card .info p {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--text-dark);
-        }
-
-        .card .action-btn {
-            width: 40px;
-            height: 40px;
-            background: #fff1f2;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
+            flex-direction: column;
             justify-content: center;
-            color: var(--primary);
-            font-size: 18px;
+            gap: 8px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
         }
 
-        footer {
-            text-align: center;
-            padding: 40px 0;
+        .formula { font-size: 14px; color: #9ca3af; word-break: break-all; }
+        .result { font-size: 32px; font-weight: 700; color: #ef4444; }
+
+        .btn-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
         }
 
-        .back-link {
-            text-decoration: none;
-            color: var(--text-light);
-            font-size: 14px;
-            font-weight: 500;
+        button {
+            padding: 20px 10px;
+            border-radius: 12px;
+            border: 1px solid rgba(0,0,0,0.05);
+            background: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
             transition: var(--transition);
         }
 
-        .back-link:hover {
-            color: var(--primary);
-        }
+        button:active { transform: scale(0.95); background: #f3f4f6; }
+        
+        button.op { background: #fee2e2; color: var(--primary); }
+        button.action { background: var(--primary); color: white; grid-column: span 2; }
+        button.clear { background: #374151; color: white; }
 
-        /* 动画 */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .card {
-            animation: fadeIn 0.4s ease-out both;
+        .history {
+            margin-top: 10px;
+            font-size: 12px;
+            color: var(--text-light);
+            text-align: center;
         }
     </style>
 </head>
@@ -186,113 +92,97 @@
 
 <div class="app-container">
     <header>
-        <div class="badge">🧧 2026 春节版</div>
-        <h1>亲戚称呼助手</h1>
+        <h1>亲戚关系计算器</h1>
     </header>
 
-    <div class="search-box">
-        <input type="text" id="searchInput" placeholder="搜索称呼，如'爸爸'..." oninput="filterCards()">
+    <div class="display-screen">
+        <div class="formula" id="formula">我</div>
+        <div class="result" id="result">自己</div>
     </div>
 
-    <div class="grid" id="cardGrid">
-        <!-- 基础长辈 -->
-        <div class="section-title">直系长辈</div>
-        <div class="card" data-key="爸爸的爸爸"><div class="info"><h3>爸爸的爸爸</h3><p>爷爷</p></div><div class="action-btn">🗣️</div></div>
-        <div class="card" data-key="爸爸的妈妈"><div class="info"><h3>爸爸的妈妈</h3><p>奶奶</p></div><div class="action-btn">🗣️</div></div>
-        <div class="card" data-key="妈妈的爸爸"><div class="info"><h3>妈妈的爸爸</h3><p>外公 / 姥爷</p></div><div class="action-btn">🗣️</div></div>
-        <div class="card" data-key="妈妈的妈妈"><div class="info"><h3>妈妈的妈妈</h3><p>外婆 / 姥姥</p></div><div class="action-btn">🗣️</div></div>
+    <div class="btn-grid">
+        <button onclick="addRelation('父')">父</button>
+        <button onclick="addRelation('母')">母</button>
+        <button class="clear" onclick="backspace()">⬅</button>
+        <button class="clear" onclick="clearAll()">AC</button>
+        
+        <button onclick="addRelation('夫')">夫</button>
+        <button onclick="addRelation('妻')">妻</button>
+        <button onclick="addRelation('兄')">兄</button>
+        <button onclick="addRelation('弟')">弟</button>
+        
+        <button onclick="addRelation('姐')">姐</button>
+        <button onclick="addRelation('妹')">妹</button>
+        <button onclick="addRelation('子')">子</button>
+        <button onclick="addRelation('女')">女</button>
 
-        <!-- 父系亲属 -->
-        <div class="section-title">父系亲属</div>
-        <div class="card" data-key="爸爸的哥哥"><div class="info"><h3>爸爸的哥哥</h3><p>伯伯</p></div><div class="action-btn">🗣️</div></div>
-        <div class="card" data-key="爸爸的哥哥的妻子"><div class="info"><h3>爸爸的哥哥的妻子</h3><p>伯母</p></div><div class="action-btn">🗣️</div></div>
-        <div class="card" data-key="爸爸的弟弟"><div class="info"><h3>爸爸的弟弟</h3><p>叔叔</p></div><div class="action-btn">🗣️</div></div>
-        <div class="card" data-key="爸爸的弟弟的妻子"><div class="info"><h3>爸爸的弟弟的妻子</h3><p>婶婶</p></div><div class="action-btn">🗣️</div></div>
-        <div class="card" data-key="爸爸的姐姐/妹妹"><div class="info"><h3>爸爸的姐姐/妹妹</h3><p>姑姑</p></div><div class="action-btn">🗣️</div></div>
-        <div class="card" data-key="爸爸的姐姐/妹妹的丈夫"><div class="info"><h3>爸爸的姐妹的丈夫</h3><p>姑丈</p></div><div class="action-btn">🗣️</div></div>
-        <div class="card" data-key="爸爸的堂兄弟"><div class="info"><h3>爸爸的堂兄弟</h3><p>堂伯 / 堂叔</p></div><div class="action-btn">🗣️</div></div>
-        <div class="card" data-key="爸爸的表兄弟"><div class="info"><h3>爸爸的表兄弟</h3><p>表伯 / 表叔</p></div><div class="action-btn">🗣️</div></div>
-
-        <!-- 母系亲属 -->
-        <div class="section-title">母系亲属</div>
-        <div class="card" data-key="妈妈的兄弟"><div class="info"><h3>妈妈的兄弟</h3><p>舅舅</p></div><div class="action-btn">🗣️</div></div>
-        <div class="card" data-key="妈妈的兄弟的妻子"><div class="info"><h3>妈妈的兄弟的妻子</h3><p>舅妈</p></div><div class="action-btn">🗣️</div></div>
-        <div class="card" data-key="妈妈的姐妹"><div class="info"><h3>妈妈的姐妹</h3><p>姨妈 / 姨娘</p></div><div class="action-btn">🗣️</div></div>
-        <div class="card" data-key="妈妈的姐妹的丈夫"><div class="info"><h3>妈妈的姐妹的丈夫</h3><p>姨丈</p></div><div class="action-btn">🗣️</div></div>
-
-        <!-- 平辈 -->
-        <div class="section-title">平辈兄弟姐妹</div>
-        <div class="card" data-key="叔伯的孩子"><div class="info"><h3>叔伯的孩子</h3><p>堂哥 / 堂弟 / 堂姐 / 堂妹</p></div><div class="action-btn">🗣️</div></div>
-        <div class="card" data-key="姑舅姨的孩子"><div class="info"><h3>姑舅姨的孩子</h3><p>表哥 / 表弟 / 表姐 / 表妹</p></div><div class="action-btn">🗣️</div></div>
-        <div class="card" data-key="妻子的哥哥/弟弟"><div class="info"><h3>妻子的哥哥/弟弟</h3><p>大舅子 / 小舅子</p></div><div class="action-btn">🗣️</div></div>
-        <div class="card" data-key="妻子的姐姐/妹妹"><div class="info"><h3>妻子的姐姐/妹妹</h3><p>大姨子 / 小姨子</p></div><div class="action-btn">🗣️</div></div>
-        <div class="card" data-key="丈夫的哥哥/弟弟"><div class="info"><h3>丈夫的哥哥/弟弟</h3><p>大伯子 / 小叔子</p></div><div class="action-btn">🗣️</div></div>
-        <div class="card" data-key="丈夫的姐姐/妹妹"><div class="info"><h3>丈夫的姐姐/妹妹</h3><p>大姑子 / 小姑子</p></div><div class="action-btn">🗣️</div></div>
-
-        <!-- 晚辈 -->
-        <div class="section-title">晚辈</div>
-        <div class="card" data-key="我的孩子对我的叔叔/婶婶的称呼"><div class="info"><h3>我的孩子对我的叔叔/婶婶的称呼</h3><p>叔公 / 婶婆</p></div><div class="action-btn">🗣️</div></div>
-        <div class="card" data-key="我的孩子对我的姑姑/姑丈的称呼"><div class="info"><h3>我的孩子对我的姑姑/姑丈的称呼</h3><p>姑婆 / 姑公</p></div><div class="action-btn">🗣️</div></div>
-        <div class="card" data-key="我的孩子对我的舅舅/舅妈的称呼"><div class="info"><h3>我的孩子对我的舅舅/舅妈的称呼</h3><p>舅公 / 舅婆</p></div><div class="action-btn">🗣️</div></div>
-        <div class="card" data-key="我的孩子对我的姨妈/姨丈的称呼"><div class="info"><h3>我的孩子对我的姨妈/姨丈的称呼</h3><p>姨婆 / 姨公</p></div><div class="action-btn">🗣️</div></div>
-        <div class="card" data-key="哥哥/姐姐的孩子"><div class="info"><h3>哥哥/姐姐的孩子</h3><p>侄子 / 侄女</p></div><div class="action-btn">🗣️</div></div>
-        <div class="card" data-key="弟弟/妹妹的孩子"><div class="info"><h3>弟弟/妹妹的孩子</h3><p>外甥 / 外甥女</p></div><div class="action-btn">🗣️</div></div>
-        <div class="card" data-key="儿子的妻子"><div class="info"><h3>儿子的妻子</h3><p>儿媳</p></div><div class="action-btn">🗣️</div></div>
-        <div class="card" data-key="女儿的丈夫"><div class="info"><h3>女儿的丈夫</h3><p>女婿</p></div><div class="action-btn">🗣️</div></div>
+        <button class="action" onclick="toggleSex(1)">我是男性</button>
+        <button class="action" onclick="toggleSex(0)">我是女性</button>
     </div>
 
-    <footer>
-        <a href="../" class="back-link">← 返回托管平台</a>
-    </footer>
+    <div class="history">
+        提示：点击“父”、“母”等关系按钮进行叠加计算
+    </div>
 </div>
 
+<!-- 引入开源的关系计算库 -->
+<script src="https://cdn.jsdelivr.net/npm/relationship.js/dist/relationship.min.js"></script>
 <script>
-    function filterCards() {
-        const query = document.getElementById('searchInput').value.toLowerCase();
-        const cards = document.querySelectorAll('.card');
-        const sections = document.querySelectorAll('.section-title');
-        
-        cards.forEach(card => {
-            const text = card.getAttribute('data-key').toLowerCase() + card.querySelector('p').innerText.toLowerCase();
-            if (text.includes(query)) {
-                card.style.display = 'flex';
-            } else {
-                card.style.display = 'none';
-            }
-        });
+    let currentFormula = '';
+    let isMale = 1;
 
-        // 如果搜索时某一部分没有卡片，隐藏标题
-        sections.forEach(section => {
-            let next = section.nextElementSibling;
-            let hasVisible = false;
-            while (next && !next.classList.contains('section-title')) {
-                if (next.style.display !== 'none') {
-                    hasVisible = true;
-                    break;
-                }
-                next = next.nextElementSibling;
-            }
-            section.style.display = (hasVisible || query === '') ? 'flex' : 'none';
-        });
+    const formulaEl = document.getElementById('formula');
+    const resultEl = document.getElementById('result');
+
+    function updateDisplay() {
+        const formulaText = currentFormula ? '我的' + currentFormula.split('').join('的') : '我';
+        formulaEl.innerText = formulaText;
+        
+        const options = {
+            text: currentFormula,
+            sex: isMale,
+            reverse: false,
+            type: 'chain'
+        };
+        
+        const res = relationship(options);
+        if (res && res.length > 0) {
+            resultEl.innerText = res[0];
+        } else {
+            resultEl.innerText = currentFormula ? '太远了，不知道' : '自己';
+        }
     }
 
-    // 给每个卡片加一点交互
-    document.querySelectorAll('.card').forEach((card, index) => {
-        card.style.animationDelay = `${index * 0.02}s`;
-        card.onclick = () => {
-            const name = card.querySelector('p').innerText;
-            // 简单的反馈效果
-            card.style.background = '#fff1f2';
-            setTimeout(() => card.style.background = '#ffffff', 200);
-            
-            // 语音播报（如果浏览器支持）
-            if ('speechSynthesis' in window) {
-                const utterance = new SpeechSynthesisUtterance(name.split('/')[0].trim());
-                utterance.lang = 'zh-CN';
-                window.speechSynthesis.speak(utterance);
-            }
-        };
-    });
+    function addRelation(r) {
+        currentFormula += r;
+        updateDisplay();
+        // 语音播报
+        speak(r);
+    }
+
+    function clearAll() {
+        currentFormula = '';
+        updateDisplay();
+    }
+
+    function backspace() {
+        currentFormula = currentFormula.slice(0, -1);
+        updateDisplay();
+    }
+
+    function toggleSex(s) {
+        isMale = s;
+        updateDisplay();
+        alert('已切换为' + (s ? '男性' : '女性') + '视角');
+    }
+
+    function speak(text) {
+        if ('speechSynthesis' in window) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'zh-CN';
+            window.speechSynthesis.speak(utterance);
+        }
+    }
 </script>
 
 </body>
