@@ -3,223 +3,255 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>亲戚称呼计算器 PRO | 2026 最终版</title>
+    <title>亲戚关系链助手 | 自由定义版</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #F2F2F7;
-            --card: #FFFFFF;
-            --primary: #FF3B30;
-            --secondary: #007AFF;
+            --bg: #F8F9FA;
+            --primary: #007AFF;
             --text: #1C1C1E;
             --text-secondary: #8E8E93;
-            --btn-gray: #E5E5EA;
-            --radius: 20px;
+            --border: #E5E5EA;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
-            font-family: 'Inter', -apple-system, system-ui, sans-serif;
+            font-family: 'Inter', -apple-system, sans-serif;
             background-color: var(--bg);
             color: var(--text);
             display: flex;
             justify-content: center;
-            align-items: center;
             min-height: 100vh;
         }
 
         .app {
             width: 100%;
-            max-width: 440px;
-            height: 95vh;
-            background: var(--card);
-            border-radius: 40px;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15);
+            max-width: 500px;
+            background: white;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
-            position: relative;
+            box-shadow: 0 0 20px rgba(0,0,0,0.05);
         }
 
-        .screen {
-            padding: 30px 25px 15px;
-            text-align: right;
-            min-height: 160px;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            background: #FFFFFF;
+        /* 顶部标题 */
+        header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            text-align: center;
         }
+        h1 { font-size: 18px; font-weight: 700; }
 
-        .formula { font-size: 14px; color: var(--text-secondary); margin-bottom: 5px; min-height: 1.2em; }
-        .result-label { font-size: 11px; color: var(--primary); font-weight: 700; margin-bottom: 2px; }
-        .result { font-size: 36px; font-weight: 800; color: var(--text); line-height: 1.1; }
-
-        .identity-box { padding: 0 20px 10px; }
-        .mode-selector {
-            display: flex;
-            background: var(--btn-gray);
-            padding: 4px;
-            border-radius: 14px;
-            gap: 4px;
-        }
-        .mode-btn {
-            flex: 1; border: none; padding: 10px; border-radius: 10px; font-size: 13px; font-weight: 700;
-            cursor: pointer; background: transparent; color: var(--text-secondary); transition: 0.2s;
-        }
-        .mode-btn.active { background: white; color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-
-        .keypad {
-            background: #F9F9F9;
-            padding: 12px;
-            border-radius: 35px 35px 0 0;
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 6px;
+        /* 路径构建器 */
+        .path-builder {
+            padding: 24px;
+            background: #fff;
             flex-grow: 1;
         }
 
-        button {
-            border: none; height: 48px; border-radius: 12px; font-size: 14px; font-weight: 600;
-            cursor: pointer; background: white; color: var(--text); box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            position: relative;
         }
-        button:active { transform: scale(0.92); background: var(--btn-gray); }
-        button.op { color: var(--secondary); background: #EBF5FF; }
-        button.del { color: var(--primary); background: #FFF0F0; }
-        button.special { background: #F2F2F7; font-size: 11px; color: var(--text-secondary); }
-        button.sex { grid-column: span 2; font-size: 12px; border: 1px solid var(--btn-gray); }
-        button.sex.active { background: var(--text); color: white; border-color: var(--text); }
-        button.full { grid-column: span 5; height: 40px; background: var(--secondary); color: white; font-size: 13px; }
 
-        .footer { padding: 8px; text-align: center; font-size: 9px; color: var(--text-secondary); background: #F9F9F9; }
+        .step::after {
+            content: "";
+            position: absolute;
+            left: 17px;
+            top: 35px;
+            width: 2px;
+            height: 20px;
+            background: var(--border);
+        }
+
+        .step:last-child::after { display: none; }
+
+        .step-num {
+            width: 36px;
+            height: 36px;
+            background: var(--bg);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            border: 2px solid var(--border);
+            flex-shrink: 0;
+            z-index: 1;
+        }
+
+        .step.active .step-num {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .step-content {
+            flex-grow: 1;
+        }
+
+        .select-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .chip {
+            padding: 8px 16px;
+            background: var(--bg);
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+            border: 1px solid var(--border);
+        }
+
+        .chip:hover { border-color: var(--primary); color: var(--primary); }
+        .chip.selected { background: var(--primary); color: white; border-color: var(--primary); }
+
+        /* 结果卡片 */
+        .result-card {
+            margin: 20px;
+            padding: 24px;
+            background: #F2F2F7;
+            border-radius: 20px;
+            text-align: center;
+        }
+
+        .res-label { font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; font-weight: 600; }
+        .res-value { font-size: 32px; font-weight: 800; color: var(--primary); }
+
+        .btn-reset {
+            margin: 0 20px 20px;
+            padding: 16px;
+            border: none;
+            background: var(--text);
+            color: white;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
 
 <div class="app">
-    <div class="screen">
-        <div class="formula" id="formula">我 ➜ </div>
-        <div class="result-label" id="res-label">我怎么称呼</div>
-        <div class="result" id="result">自己</div>
-    </div>
+    <header>
+        <h1>亲戚关系链助手 (自由定义版)</h1>
+    </header>
 
-    <div class="identity-box">
-        <div class="mode-selector">
-            <button class="mode-btn active" id="m-me" onclick="setMode('me')">我来叫</button>
-            <button class="mode-btn" id="m-child" onclick="setMode('child')">孩子叫 (隔代)</button>
+    <div class="path-builder" id="path-builder">
+        <!-- 步骤 1：谁在叫？ -->
+        <div class="step active">
+            <div class="step-num">1</div>
+            <div class="step-content">
+                <div style="font-size: 13px; font-weight: 600; color: var(--text-secondary);">称呼发起人 (我是谁？)</div>
+                <div class="select-group" id="root-select">
+                    <div class="chip selected" onclick="setRoot('我', 1)">我(男)</div>
+                    <div class="chip" onclick="setRoot('我', 0)">我(女)</div>
+                    <div class="chip" onclick="setRoot('儿子', 1)">儿子</div>
+                    <div class="chip" onclick="setRoot('女儿', 0)">女儿</div>
+                    <div class="chip" onclick="setRoot('老公', 1)">老公</div>
+                    <div class="chip" onclick="setRoot('老婆', 0)">老婆</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 步骤 2：找谁？ -->
+        <div class="step active" id="relation-step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+                <div style="font-size: 13px; font-weight: 600; color: var(--text-secondary);">他/她是发起人的... (点击添加关系链)</div>
+                <div class="select-group">
+                    <div class="chip" onclick="addRelation('父')">爸爸</div>
+                    <div class="chip" onclick="addRelation('母')">妈妈</div>
+                    <div class="chip" onclick="addRelation('兄')">哥哥</div>
+                    <div class="chip" onclick="addRelation('弟')">弟弟</div>
+                    <div class="chip" onclick="addRelation('姐')">姐姐</div>
+                    <div class="chip" onclick="addRelation('妹')">妹妹</div>
+                    <div class="chip" onclick="addRelation('夫')">丈夫</div>
+                    <div class="chip" onclick="addRelation('妻')">妻子</div>
+                </div>
+                <div id="chain-display" style="margin-top: 12px; font-size: 14px; color: var(--primary); font-weight: 600;">
+                    关系路径：未设置
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="keypad">
-        <button class="sex active" id="s-1" onclick="setSex(1)">男视角(爸)</button>
-        <button class="sex" id="s-0" onclick="setSex(0)">女视角(妈)</button>
-        <button class="del" onclick="clearAll()">AC</button>
-
-        <button class="op" onclick="add('父')">父</button>
-        <button class="op" onclick="add('母')">母</button>
-        <button class="op" onclick="add('兄')">兄</button>
-        <button class="op" onclick="add('弟')">弟</button>
-        <button class="del" onclick="backspace()">⬅</button>
-
-        <button class="op" onclick="add('姐')">姐</button>
-        <button class="op" onclick="add('妹')">妹</button>
-        <button class="op" onclick="add('子')">子</button>
-        <button class="op" onclick="add('女')">女</button>
-        <button class="op" onclick="add('夫')">夫</button>
-
-        <button class="op" onclick="add('妻')">妻</button>
-        <button class="special" onclick="shortcut('父兄')">伯父</button>
-        <button class="special" onclick="shortcut('父弟')">叔叔</button>
-        <button class="special" onclick="shortcut('父姐')">姑妈</button>
-        <button class="special" onclick="shortcut('父妹')">姑姐</button>
-
-        <button class="special" onclick="shortcut('母兄')">大舅</button>
-        <button class="special" onclick="shortcut('母弟')">小舅</button>
-        <button class="special" onclick="shortcut('母姐')">姨妈</button>
-        <button class="special" onclick="shortcut('母妹')">姨姐</button>
-        <button class="special" onclick="shortcut('父父')">爷爷</button>
-
-        <button class="special" onclick="shortcut('父母')">奶奶</button>
-        <button class="special" onclick="shortcut('母父')">外公</button>
-        <button class="special" onclick="shortcut('母母')">外婆</button>
-        <button class="special" onclick="shortcut('父父父')">太爷</button>
-        <button class="special" onclick="shortcut('父母母')">太奶</button>
-
-        <button class="full" onclick="calculate()">= 确认计算关系</button>
+    <div class="result-card">
+        <div class="res-label" id="res-label">最终称呼结果</div>
+        <div class="res-value" id="res-value">---</div>
     </div>
-    
-    <div class="footer">CLAW RELATIONS ENGINE v4.0 - 覆盖 99% 常用称呼</div>
+
+    <button class="btn-reset" onclick="reset()">重新定义起点</button>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/relationship.js/dist/relationship.min.js"></script>
 <script>
-    let chain = '';
-    let sex = 1;
-    let mode = 'me';
+    let rootPerson = '我';
+    let rootSex = 1;
+    let relationChain = '';
 
-    const fEl = document.getElementById('formula');
-    const rEl = document.getElementById('result');
-    const lEl = document.getElementById('res-label');
-
-    function setSex(s) {
-        sex = s;
-        document.getElementById('s-1').classList.toggle('active', s === 1);
-        document.getElementById('s-0').classList.toggle('active', s === 0);
+    function setRoot(name, sex) {
+        rootPerson = name;
+        rootSex = sex;
+        // 更新 UI
+        const chips = document.querySelectorAll('#root-select .chip');
+        chips.forEach(c => {
+            if(c.innerText.includes(name)) c.classList.add('selected');
+            else c.classList.remove('selected');
+        });
         update();
     }
 
-    function setMode(m) {
-        mode = m;
-        document.getElementById('m-me').classList.toggle('active', m === 'me');
-        document.getElementById('m-child').classList.toggle('active', m === 'child');
-        lEl.innerText = (m === 'me' ? '我怎么称呼' : '孩子怎么称呼');
+    function addRelation(r) {
+        relationChain += r;
         update();
     }
 
-    function shortcut(path) {
-        chain = path;
+    function reset() {
+        relationChain = '';
         update();
     }
-
-    function add(r) {
-        chain += r;
-        update();
-    }
-
-    function clearAll() { chain = ''; update(); }
-    function backspace() { chain = chain.slice(0, -1); update(); }
-    function calculate() { update(); }
 
     function update() {
-        let display = (mode === 'me' ? '我' : '孩子');
-        if (chain) {
-            display += ' ➜ ' + (mode === 'child' ? '我的' : '') + chain.split('').join('的');
-        } else {
-            display += ' ➜ ' + (mode === 'me' ? '自己' : '我');
-        }
-        fEl.innerText = display;
+        const displayEl = document.getElementById('chain-display');
+        const resEl = document.getElementById('res-value');
+        const labelEl = document.getElementById('res-label');
 
-        // 核心计算逻辑修正
-        let query = '';
-        if (mode === 'child') {
-            // 孩子视角：我的孩子对 [我的...] 的称呼
-            // 如果我是男视角，则是“子的...”；如果是女视角，则是“女的...”
-            query = (sex === 1 ? '子' : '女') + chain;
-        } else {
-            query = chain;
-        }
-        
-        const res = relationship({ text: query, sex: sex, type: 'chain' });
+        displayEl.innerText = `关系路径：${rootPerson} 的 ${relationChain.split('').join(' 的 ') || '...'}`;
+        labelEl.innerText = `${rootPerson} 应该叫对方：`;
+
+        // 核心逻辑：
+        // 1. 如果起点是“我”，直接算 chain
+        // 2. 如果起点是“儿子”，算 “子” + chain
+        // 3. 如果起点是“老婆”，算 “妻” + chain
+        let base = '';
+        if (rootPerson === '儿子') base = '子';
+        if (rootPerson === '女儿') base = '女';
+        if (rootPerson === '老婆') base = '妻';
+        if (rootPerson === '老公') base = '夫';
+
+        const res = relationship({
+            text: base + relationChain,
+            sex: rootSex,
+            type: 'chain'
+        });
 
         if (res && res.length > 0) {
-            rEl.innerText = res[0];
-            rEl.style.fontSize = res[0].length > 6 ? '24px' : (res[0].length > 4 ? '30px' : '36px');
+            resEl.innerText = res[0];
         } else {
-            rEl.innerText = chain ? '太复杂，需拆分' : (mode === 'me' ? '自己' : '爸爸/妈妈');
-            rEl.style.fontSize = '36px';
+            resEl.innerText = relationChain ? '关系太远' : '请在步骤2添加关系';
         }
     }
 </script>
