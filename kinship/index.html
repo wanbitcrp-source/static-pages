@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>亲戚称呼专家 | 离线字典增强版</title>
+    <title>亲戚称呼专家 | 深度字典完整版</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -35,7 +35,7 @@
 </head>
 <body>
 <div class="app">
-    <header><h1>亲戚称呼专家 (字典解析版)</h1></header>
+    <header><h1>亲戚称呼专家 (深度解析版)</h1></header>
     <div class="path-builder">
         <div class="section-title">1. 设置起点人</div>
         <div class="select-group" id="root-select">
@@ -53,6 +53,8 @@
             <div class="chip" onclick="add('弟')">弟弟</div>
             <div class="chip" onclick="add('姐')">姐姐</div>
             <div class="chip" onclick="add('妹')">妹妹</div>
+            <div class="chip" onclick="add('妻')">妻子(婶/舅妈等)</div>
+            <div class="chip" onclick="add('夫')">丈夫(姑丈/姨丈等)</div>
         </div>
         <div class="chain-view">
             <div class="section-title" style="margin-bottom:8px">关系路径推导：</div>
@@ -60,7 +62,7 @@
         </div>
     </div>
     <div class="result-box">
-        <div class="res-label" id="res-label">对方应该叫：</div>
+        <div class="res-label" id="res-label">称呼结果：</div>
         <div class="res-value" id="res-value">自己</div>
     </div>
     <button class="btn-reset" onclick="reset()">清空关系路径</button>
@@ -71,17 +73,15 @@ let kinshipDict = {};
 let root = '我';
 let chain = '';
 
-// 预加载字典
+// 加载深度字典
 fetch('data.json')
     .then(r => r.json())
     .then(data => {
         kinshipDict = data;
-        console.log('字典加载成功');
+        update();
     })
     .catch(err => {
-        console.warn('字典加载失败，使用内置兜底');
-        // 兜底数据
-        kinshipDict = {"我":{"父":"爸爸","母":"妈妈","妻":{"父":"爸爸"}},"老婆":{"父":"爸爸"}};
+        console.warn('字典加载失败');
     });
 
 function setRoot(name) {
@@ -99,18 +99,21 @@ function update() {
     const pathEl = document.getElementById('chain-path');
     const resEl = document.getElementById('res-value');
     
-    pathEl.innerText = `${root} 的 ${chain.split('').join(' 的 ') || '...'}`;
+    // 映射显示
+    const map = {'父':'爸','母':'妈','兄':'哥','弟':'弟','姐':'姐','妹':'妹','妻':'妻','夫':'夫'};
+    let pathArr = chain.split('').map(c => map[c] || c);
+    pathEl.innerText = `${root} 的 ${pathArr.join(' 的 ') || '...'}`;
 
     if (!chain) {
         resEl.innerText = root === '我' ? '自己' : root;
         return;
     }
 
-    // 1. 优先从文件字典中精确匹配
+    // 优先匹配深度字典
     if (kinshipDict[root] && kinshipDict[root][chain]) {
         resEl.innerText = kinshipDict[root][chain];
     } else if (window.relationship) {
-        // 2. 字典没有，则降级使用算法解析
+        // 降级使用算法解析
         let base = '';
         if (root === '儿子') base = '子';
         if (root === '女儿') base = '女';
@@ -119,11 +122,9 @@ function update() {
         
         const r = relationship({text: base + chain, sex: 1, type: 'chain'});
         resEl.innerText = (r && r.length) ? r[0] : "关系太远";
-    } else {
-        resEl.innerText = "匹配失败";
     }
 }
 </script>
-<script src="https://cdn.jsdelivr.net/npm/relationship.js/dist/relationship.min.js" onload="update()"></script>
+<script src="https://cdn.jsdelivr.net/npm/relationship.js/dist/relationship.min.js"></script>
 </body>
 </html>
