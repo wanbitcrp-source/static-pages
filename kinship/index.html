@@ -202,7 +202,16 @@
         }
         fEl.innerText = display;
 
-        let query = (mode === 'child' ? '子' : '') + chain;
+        // 核心计算逻辑修正
+        let query = '';
+        if (mode === 'child') {
+            // 孩子视角：我的孩子对 [我的...] 的称呼
+            // 如果我是男视角，则是“子的...”；如果是女视角，则是“女的...”
+            query = (sex === 1 ? '子' : '女') + chain;
+        } else {
+            query = chain;
+        }
+        
         const res = relationship({ text: query, sex: sex, type: 'chain' });
 
         if (res && res.length > 0) {
