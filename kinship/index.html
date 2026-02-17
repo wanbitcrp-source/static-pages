@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>亲戚称呼专家 | 深度字典完整版</title>
+    <title>亲戚称呼专家 | 动态字典版</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -20,111 +20,113 @@
         .app { width: 100%; max-width: 500px; background: white; display: flex; flex-direction: column; box-shadow: 0 0 20px rgba(0,0,0,0.05); }
         header { padding: 20px; border-bottom: 1px solid var(--border); text-align: center; }
         h1 { font-size: 18px; font-weight: 700; }
-        .path-builder { padding: 20px; background: #fff; flex-grow: 1; }
+        .content { padding: 20px; flex-grow: 1; overflow-y: auto; }
         .section-title { font-size: 13px; font-weight: 700; color: var(--text-secondary); margin-bottom: 12px; }
-        .select-group { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
-        .chip { padding: 12px 18px; background: var(--bg); border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); transition: 0.2s; }
+        
+        /* 根人选择 */
+        .root-selector { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+        .chip { padding: 10px 16px; background: var(--bg); border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); transition: 0.2s; }
         .chip.selected { background: var(--primary); color: white; border-color: var(--primary); }
-        .chain-view { background: #F2F2F7; padding: 20px; border-radius: 16px; margin-bottom: 24px; border: 1px dashed var(--border); }
-        .chain-path { font-size: 15px; font-weight: 700; color: var(--primary); margin-bottom: 4px; }
-        .result-box { text-align: center; padding: 30px 20px; background: linear-gradient(135deg, #1C1C1E 0%, #3A3A3C 100%); border-radius: 20px; color: white; margin: 0 20px 20px; }
-        .res-label { font-size: 12px; opacity: 0.8; margin-bottom: 10px; }
-        .res-value { font-size: 36px; font-weight: 800; color: #FFD60A; }
-        .btn-reset { margin: 0 20px 20px; padding: 16px; border: none; background: #E5E5EA; color: var(--text); border-radius: 12px; font-weight: 700; cursor: pointer; }
+
+        /* 关系网展示 */
+        .relation-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .relation-card { padding: 16px; border: 1px solid var(--border); border-radius: 16px; background: white; transition: 0.2s; cursor: pointer; display: flex; flex-direction: column; gap: 4px; }
+        .relation-card:hover { border-color: var(--primary); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .rel-path { font-size: 11px; color: var(--text-secondary); font-weight: 500; }
+        .rel-name { font-size: 16px; font-weight: 800; color: var(--text); }
+
+        .search-box { margin-bottom: 20px; position: relative; }
+        .search-input { width: 100%; padding: 12px 16px; border-radius: 12px; border: 1px solid var(--border); outline: none; font-size: 14px; background: #F2F2F7; }
+
+        .empty { text-align: center; padding: 40px; color: var(--text-secondary); }
     </style>
 </head>
 <body>
 <div class="app">
-    <header><h1>亲戚称呼专家 (深度解析版)</h1></header>
-    <div class="path-builder">
-        <div class="section-title">1. 设置起点人</div>
-        <div class="select-group" id="root-select">
-            <div class="chip selected" onclick="setRoot('我')">我</div>
-            <div class="chip" onclick="setRoot('儿子')">儿子</div>
-            <div class="chip" onclick="setRoot('女儿')">女儿</div>
-            <div class="chip" onclick="setRoot('老公')">老公</div>
-            <div class="chip" onclick="setRoot('老婆')">老婆</div>
+    <header><h1>亲戚称呼全集 (动态版)</h1></header>
+    <div class="content">
+        <div class="section-title">第一步：选择“谁在叫人”</div>
+        <div class="root-selector" id="root-selector">
+            <!-- 动态生成 -->
         </div>
-        <div class="section-title">2. 构建关系路径</div>
-        <div class="select-group">
-            <div class="chip" onclick="add('父')">爸爸</div>
-            <div class="chip" onclick="add('母')">妈妈</div>
-            <div class="chip" onclick="add('兄')">哥哥</div>
-            <div class="chip" onclick="add('弟')">弟弟</div>
-            <div class="chip" onclick="add('姐')">姐姐</div>
-            <div class="chip" onclick="add('妹')">妹妹</div>
-            <div class="chip" onclick="add('妻')">妻子(婶/舅妈等)</div>
-            <div class="chip" onclick="add('夫')">丈夫(姑丈/姨丈等)</div>
+
+        <div class="search-box">
+            <input type="text" class="search-input" id="search" placeholder="输入你想找的亲戚称呼，如'叔叔'..." oninput="renderRelations()">
         </div>
-        <div class="chain-view">
-            <div class="section-title" style="margin-bottom:8px">关系路径推导：</div>
-            <div class="chain-path" id="chain-path">我</div>
+
+        <div class="section-title">第二步：直接查看/选择</div>
+        <div class="relation-grid" id="relation-grid">
+            <!-- 动态生成 -->
         </div>
     </div>
-    <div class="result-box">
-        <div class="res-label" id="res-label">称呼结果：</div>
-        <div class="res-value" id="res-value">自己</div>
-    </div>
-    <button class="btn-reset" onclick="reset()">清空关系路径</button>
 </div>
 
 <script>
-let kinshipDict = {};
-let root = '我';
-let chain = '';
+let fullDict = {};
+let currentRoot = '';
 
-// 加载深度字典
+const rootEl = document.getElementById('root-selector');
+const gridEl = document.getElementById('relation-grid');
+const searchEl = document.getElementById('search');
+
+// 加载字典并初始化
 fetch('data.json')
     .then(r => r.json())
     .then(data => {
-        kinshipDict = data;
-        update();
-    })
-    .catch(err => {
-        console.warn('字典加载失败');
-    });
-
-function setRoot(name) {
-    root = name;
-    document.querySelectorAll('#root-select .chip').forEach(c => {
-        c.classList.toggle('selected', c.innerText === name);
-    });
-    update();
-}
-
-function add(r) { chain += r; update(); }
-function reset() { chain = ''; update(); }
-
-function update() {
-    const pathEl = document.getElementById('chain-path');
-    const resEl = document.getElementById('res-value');
-    
-    // 映射显示
-    const map = {'父':'爸','母':'妈','兄':'哥','弟':'弟','姐':'姐','妹':'妹','妻':'妻','夫':'夫'};
-    let pathArr = chain.split('').map(c => map[c] || c);
-    pathEl.innerText = `${root} 的 ${pathArr.join(' 的 ') || '...'}`;
-
-    if (!chain) {
-        resEl.innerText = root === '我' ? '自己' : root;
-        return;
-    }
-
-    // 优先匹配深度字典
-    if (kinshipDict[root] && kinshipDict[root][chain]) {
-        resEl.innerText = kinshipDict[root][chain];
-    } else if (window.relationship) {
-        // 降级使用算法解析
-        let base = '';
-        if (root === '儿子') base = '子';
-        if (root === '女儿') base = '女';
-        if (root === '老婆') base = '妻';
-        if (root === '老公') base = '夫';
+        fullDict = data;
+        const roots = Object.keys(data);
+        currentRoot = roots[0];
         
-        const r = relationship({text: base + chain, sex: 1, type: 'chain'});
-        resEl.innerText = (r && r.length) ? r[0] : "关系太远";
+        // 渲染根选择器
+        roots.forEach(r => {
+            const chip = document.createElement('div');
+            chip.className = `chip ${r === currentRoot ? 'selected' : ''}`;
+            chip.innerText = r;
+            chip.onclick = () => {
+                currentRoot = r;
+                document.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+                chip.classList.add('selected');
+                renderRelations();
+            };
+            rootEl.appendChild(chip);
+        });
+        
+        renderRelations();
+    });
+
+function renderRelations() {
+    gridEl.innerHTML = '';
+    const query = searchEl.value.toLowerCase();
+    const relations = fullDict[currentRoot];
+    
+    if (!relations) return;
+
+    // 解析路径的辅助函数
+    const map = {'父':'爸','母':'妈','兄':'哥','弟':'弟','姐':'姐','妹':'妹','妻':'妻','夫':'夫','子':'儿','女':'女'};
+
+    const keys = Object.keys(relations);
+    let found = false;
+
+    keys.forEach(path => {
+        const name = relations[path];
+        const pathText = path.split('').map(c => map[c] || c).join(' 的 ');
+        
+        if (pathText.includes(query) || name.includes(query)) {
+            found = true;
+            const card = document.createElement('div');
+            card.className = 'relation-card';
+            card.innerHTML = `
+                <div class="rel-path">${currentRoot} 的 ${pathText}</div>
+                <div class="rel-name">${name}</div>
+            `;
+            gridEl.appendChild(card);
+        }
+    });
+
+    if (!found) {
+        gridEl.innerHTML = '<div class="empty">未找到相关关系，请尝试其他关键词</div>';
     }
 }
 </script>
-<script src="https://cdn.jsdelivr.net/npm/relationship.js/dist/relationship.min.js"></script>
 </body>
 </html>
