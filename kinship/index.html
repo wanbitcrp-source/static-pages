@@ -94,6 +94,23 @@
             gap: 12px;
         }
 
+        .section-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 16px 0 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: rgba(239, 68, 68, 0.1);
+        }
+
         .card {
             background: var(--card-bg);
             padding: 20px;
@@ -178,17 +195,50 @@
     </div>
 
     <div class="grid" id="cardGrid">
-        <div class="card" data-key="爸爸的哥哥"><div class="info"><h3>爸爸的哥哥</h3><p>伯伯</p></div><div class="action-btn">🗣️</div></div>
-        <div class="card" data-key="爸爸的弟弟"><div class="info"><h3>爸爸的弟弟</h3><p>叔叔</p></div><div class="action-btn">🗣️</div></div>
-        <div class="card" data-key="爸爸的姐姐/妹妹"><div class="info"><h3>爸爸的姐姐/妹妹</h3><p>姑姑</p></div><div class="action-btn">🗣️</div></div>
-        <div class="card" data-key="妈妈的兄弟"><div class="info"><h3>妈妈的兄弟</h3><p>舅舅</p></div><div class="action-btn">🗣️</div></div>
-        <div class="card" data-key="妈妈的姐妹"><div class="info"><h3>妈妈的姐妹</h3><p>姨妈</p></div><div class="action-btn">🗣️</div></div>
-        <div class="card" data-key="妈妈的爸爸"><div class="info"><h3>妈妈的爸爸</h3><p>外公 / 姥爷</p></div><div class="action-btn">🗣️</div></div>
-        <div class="card" data-key="妈妈的妈妈"><div class="info"><h3>妈妈的妈妈</h3><p>外婆 / 姥姥</p></div><div class="action-btn">🗣️</div></div>
+        <!-- 基础长辈 -->
+        <div class="section-title">直系长辈</div>
         <div class="card" data-key="爸爸的爸爸"><div class="info"><h3>爸爸的爸爸</h3><p>爷爷</p></div><div class="action-btn">🗣️</div></div>
         <div class="card" data-key="爸爸的妈妈"><div class="info"><h3>爸爸的妈妈</h3><p>奶奶</p></div><div class="action-btn">🗣️</div></div>
+        <div class="card" data-key="妈妈的爸爸"><div class="info"><h3>妈妈的爸爸</h3><p>外公 / 姥爷</p></div><div class="action-btn">🗣️</div></div>
+        <div class="card" data-key="妈妈的妈妈"><div class="info"><h3>妈妈的妈妈</h3><p>外婆 / 姥姥</p></div><div class="action-btn">🗣️</div></div>
+
+        <!-- 父系亲属 -->
+        <div class="section-title">父系亲属</div>
+        <div class="card" data-key="爸爸的哥哥"><div class="info"><h3>爸爸的哥哥</h3><p>伯伯</p></div><div class="action-btn">🗣️</div></div>
+        <div class="card" data-key="爸爸的哥哥的妻子"><div class="info"><h3>爸爸的哥哥的妻子</h3><p>伯母</p></div><div class="action-btn">🗣️</div></div>
+        <div class="card" data-key="爸爸的弟弟"><div class="info"><h3>爸爸的弟弟</h3><p>叔叔</p></div><div class="action-btn">🗣️</div></div>
+        <div class="card" data-key="爸爸的弟弟的妻子"><div class="info"><h3>爸爸的弟弟的妻子</h3><p>婶婶</p></div><div class="action-btn">🗣️</div></div>
+        <div class="card" data-key="爸爸的姐姐/妹妹"><div class="info"><h3>爸爸的姐姐/妹妹</h3><p>姑姑</p></div><div class="action-btn">🗣️</div></div>
+        <div class="card" data-key="爸爸的姐姐/妹妹的丈夫"><div class="info"><h3>爸爸的姐妹的丈夫</h3><p>姑丈</p></div><div class="action-btn">🗣️</div></div>
+        <div class="card" data-key="爸爸的堂兄弟"><div class="info"><h3>爸爸的堂兄弟</h3><p>堂伯 / 堂叔</p></div><div class="action-btn">🗣️</div></div>
+        <div class="card" data-key="爸爸的表兄弟"><div class="info"><h3>爸爸的表兄弟</h3><p>表伯 / 表叔</p></div><div class="action-btn">🗣️</div></div>
+
+        <!-- 母系亲属 -->
+        <div class="section-title">母系亲属</div>
+        <div class="card" data-key="妈妈的兄弟"><div class="info"><h3>妈妈的兄弟</h3><p>舅舅</p></div><div class="action-btn">🗣️</div></div>
+        <div class="card" data-key="妈妈的兄弟的妻子"><div class="info"><h3>妈妈的兄弟的妻子</h3><p>舅妈</p></div><div class="action-btn">🗣️</div></div>
+        <div class="card" data-key="妈妈的姐妹"><div class="info"><h3>妈妈的姐妹</h3><p>姨妈 / 姨娘</p></div><div class="action-btn">🗣️</div></div>
+        <div class="card" data-key="妈妈的姐妹的丈夫"><div class="info"><h3>妈妈的姐妹的丈夫</h3><p>姨丈</p></div><div class="action-btn">🗣️</div></div>
+
+        <!-- 平辈 -->
+        <div class="section-title">平辈兄弟姐妹</div>
+        <div class="card" data-key="叔伯的孩子"><div class="info"><h3>叔伯的孩子</h3><p>堂哥 / 堂弟 / 堂姐 / 堂妹</p></div><div class="action-btn">🗣️</div></div>
+        <div class="card" data-key="姑舅姨的孩子"><div class="info"><h3>姑舅姨的孩子</h3><p>表哥 / 表弟 / 表姐 / 表妹</p></div><div class="action-btn">🗣️</div></div>
+        <div class="card" data-key="妻子的哥哥/弟弟"><div class="info"><h3>妻子的哥哥/弟弟</h3><p>大舅子 / 小舅子</p></div><div class="action-btn">🗣️</div></div>
+        <div class="card" data-key="妻子的姐姐/妹妹"><div class="info"><h3>妻子的姐姐/妹妹</h3><p>大姨子 / 小姨子</p></div><div class="action-btn">🗣️</div></div>
+        <div class="card" data-key="丈夫的哥哥/弟弟"><div class="info"><h3>丈夫的哥哥/弟弟</h3><p>大伯子 / 小叔子</p></div><div class="action-btn">🗣️</div></div>
+        <div class="card" data-key="丈夫的姐姐/妹妹"><div class="info"><h3>丈夫的姐姐/妹妹</h3><p>大姑子 / 小姑子</p></div><div class="action-btn">🗣️</div></div>
+
+        <!-- 晚辈 -->
+        <div class="section-title">晚辈</div>
+        <div class="card" data-key="我的孩子对我的叔叔/婶婶的称呼"><div class="info"><h3>我的孩子对我的叔叔/婶婶的称呼</h3><p>叔公 / 婶婆</p></div><div class="action-btn">🗣️</div></div>
+        <div class="card" data-key="我的孩子对我的姑姑/姑丈的称呼"><div class="info"><h3>我的孩子对我的姑姑/姑丈的称呼</h3><p>姑婆 / 姑公</p></div><div class="action-btn">🗣️</div></div>
+        <div class="card" data-key="我的孩子对我的舅舅/舅妈的称呼"><div class="info"><h3>我的孩子对我的舅舅/舅妈的称呼</h3><p>舅公 / 舅婆</p></div><div class="action-btn">🗣️</div></div>
+        <div class="card" data-key="我的孩子对我的姨妈/姨丈的称呼"><div class="info"><h3>我的孩子对我的姨妈/姨丈的称呼</h3><p>姨婆 / 姨公</p></div><div class="action-btn">🗣️</div></div>
         <div class="card" data-key="哥哥/姐姐的孩子"><div class="info"><h3>哥哥/姐姐的孩子</h3><p>侄子 / 侄女</p></div><div class="action-btn">🗣️</div></div>
         <div class="card" data-key="弟弟/妹妹的孩子"><div class="info"><h3>弟弟/妹妹的孩子</h3><p>外甥 / 外甥女</p></div><div class="action-btn">🗣️</div></div>
+        <div class="card" data-key="儿子的妻子"><div class="info"><h3>儿子的妻子</h3><p>儿媳</p></div><div class="action-btn">🗣️</div></div>
+        <div class="card" data-key="女儿的丈夫"><div class="info"><h3>女儿的丈夫</h3><p>女婿</p></div><div class="action-btn">🗣️</div></div>
     </div>
 
     <footer>
@@ -200,6 +250,7 @@
     function filterCards() {
         const query = document.getElementById('searchInput').value.toLowerCase();
         const cards = document.querySelectorAll('.card');
+        const sections = document.querySelectorAll('.section-title');
         
         cards.forEach(card => {
             const text = card.getAttribute('data-key').toLowerCase() + card.querySelector('p').innerText.toLowerCase();
@@ -209,15 +260,37 @@
                 card.style.display = 'none';
             }
         });
+
+        // 如果搜索时某一部分没有卡片，隐藏标题
+        sections.forEach(section => {
+            let next = section.nextElementSibling;
+            let hasVisible = false;
+            while (next && !next.classList.contains('section-title')) {
+                if (next.style.display !== 'none') {
+                    hasVisible = true;
+                    break;
+                }
+                next = next.nextElementSibling;
+            }
+            section.style.display = (hasVisible || query === '') ? 'flex' : 'none';
+        });
     }
 
     // 给每个卡片加一点交互
     document.querySelectorAll('.card').forEach((card, index) => {
-        card.style.animationDelay = `${index * 0.05}s`;
+        card.style.animationDelay = `${index * 0.02}s`;
         card.onclick = () => {
             const name = card.querySelector('p').innerText;
-            // 可以在这里加语音播报
-            console.log('准备播报: ' + name);
+            // 简单的反馈效果
+            card.style.background = '#fff1f2';
+            setTimeout(() => card.style.background = '#ffffff', 200);
+            
+            // 语音播报（如果浏览器支持）
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(name.split('/')[0].trim());
+                utterance.lang = 'zh-CN';
+                window.speechSynthesis.speak(utterance);
+            }
         };
     });
 </script>
