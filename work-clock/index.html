@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>上下班时钟 - Work Clock</title>
+    <title>时间节点 - Time Tracker</title>
     <style>
         * {
             margin: 0;
@@ -138,7 +138,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>⏰ 上下班时钟</h1>
+        <h1>⏰ 时间节点追踪</h1>
         
         <div class="current-time" id="currentTime">--:--:--</div>
         
@@ -149,39 +149,39 @@
 
         <div class="countdown-grid">
             <div class="countdown-item">
-                <h3>距离早上上班</h3>
+                <h3>晨间启动</h3>
                 <div class="time" id="morningStart">--:--:--</div>
             </div>
             <div class="countdown-item">
-                <h3>距离中午下班</h3>
+                <h3>午间休整</h3>
                 <div class="time" id="morningEnd">--:--:--</div>
             </div>
             <div class="countdown-item">
-                <h3>距离下午上班</h3>
+                <h3>午后回归</h3>
                 <div class="time" id="afternoonStart">--:--:--</div>
             </div>
             <div class="countdown-item">
-                <h3>距离晚上下班</h3>
+                <h3>日程完结</h3>
                 <div class="time" id="afternoonEnd">--:--:--</div>
             </div>
         </div>
 
         <div class="schedule">
-            <h3>📅 工作时间表</h3>
+            <h3>📅 时间节点</h3>
             <div class="schedule-item">
-                <span>上午上班</span>
+                <span>晨间启动</span>
                 <span>08:30</span>
             </div>
             <div class="schedule-item">
-                <span>中午下班</span>
+                <span>午间休整</span>
                 <span>11:30</span>
             </div>
             <div class="schedule-item">
-                <span>下午上班</span>
+                <span>午后回归</span>
                 <span>14:00</span>
             </div>
             <div class="schedule-item">
-                <span>晚上下班</span>
+                <span>日程完结</span>
                 <span>17:30</span>
             </div>
         </div>
@@ -228,15 +228,15 @@
             const afternoonEndMin = WORK_SCHEDULE.afternoonEnd.hour * 60 + WORK_SCHEDULE.afternoonEnd.minute;
 
             if (currentMinutes < morningStartMin) {
-                return { status: 'beforeWork', next: 'morningStart', title: '距离早上上班' };
+                return { status: 'beforeWork', next: 'morningStart', title: '距离晨间启动' };
             } else if (currentMinutes >= morningStartMin && currentMinutes < morningEndMin) {
-                return { status: 'morningWork', next: 'morningEnd', title: '距离中午下班' };
+                return { status: 'morningWork', next: 'morningEnd', title: '距离午间休整' };
             } else if (currentMinutes >= morningEndMin && currentMinutes < afternoonStartMin) {
-                return { status: 'lunchBreak', next: 'afternoonStart', title: '距离下午上班' };
+                return { status: 'lunchBreak', next: 'afternoonStart', title: '距离午后回归' };
             } else if (currentMinutes >= afternoonStartMin && currentMinutes < afternoonEndMin) {
-                return { status: 'afternoonWork', next: 'afternoonEnd', title: '距离晚上下班' };
+                return { status: 'afternoonWork', next: 'afternoonEnd', title: '距离日程完结' };
             } else {
-                return { status: 'afterWork', next: 'morningStart', title: '距离明天上班' };
+                return { status: 'afterWork', next: 'morningStart', title: '距离明日启动' };
             }
         }
 
