@@ -205,9 +205,9 @@
             const target = new Date();
             target.setHours(targetHour, targetMinute, 0, 0);
 
-            // 如果目标时间已过，设置为明天
+            // 如果目标时间已过，返回 null
             if (target <= now) {
-                target.setDate(target.getDate() + 1);
+                return null;
             }
 
             const diff = target - now;
@@ -253,14 +253,19 @@
             const afternoonStartTime = getTimeUntil(WORK_SCHEDULE.afternoonStart.hour, WORK_SCHEDULE.afternoonStart.minute);
             const afternoonEndTime = getTimeUntil(WORK_SCHEDULE.afternoonEnd.hour, WORK_SCHEDULE.afternoonEnd.minute);
 
-            document.getElementById('morningStart').textContent = 
-                formatTime(morningStartTime.hours, morningStartTime.minutes, morningStartTime.seconds);
-            document.getElementById('morningEnd').textContent = 
-                formatTime(morningEndTime.hours, morningEndTime.minutes, morningEndTime.seconds);
-            document.getElementById('afternoonStart').textContent = 
-                formatTime(afternoonStartTime.hours, afternoonStartTime.minutes, afternoonStartTime.seconds);
-            document.getElementById('afternoonEnd').textContent = 
-                formatTime(afternoonEndTime.hours, afternoonEndTime.minutes, afternoonEndTime.seconds);
+            // 显示倒计时或 "--"
+            document.getElementById('morningStart').textContent = morningStartTime 
+                ? formatTime(morningStartTime.hours, morningStartTime.minutes, morningStartTime.seconds)
+                : '--';
+            document.getElementById('morningEnd').textContent = morningEndTime
+                ? formatTime(morningEndTime.hours, morningEndTime.minutes, morningEndTime.seconds)
+                : '--';
+            document.getElementById('afternoonStart').textContent = afternoonStartTime
+                ? formatTime(afternoonStartTime.hours, afternoonStartTime.minutes, afternoonStartTime.seconds)
+                : '--';
+            document.getElementById('afternoonEnd').textContent = afternoonEndTime
+                ? formatTime(afternoonEndTime.hours, afternoonEndTime.minutes, afternoonEndTime.seconds)
+                : '--';
 
             // 更新主状态卡片
             const currentStatus = getCurrentStatus();
@@ -282,8 +287,13 @@
                     break;
             }
             
-            document.getElementById('mainCountdown').textContent = 
-                formatTime(mainTime.hours, mainTime.minutes, mainTime.seconds);
+            // 如果主倒计时也过期了，显示 "--"
+            if (mainTime) {
+                document.getElementById('mainCountdown').textContent = 
+                    formatTime(mainTime.hours, mainTime.minutes, mainTime.seconds);
+            } else {
+                document.getElementById('mainCountdown').textContent = '--';
+            }
         }
 
         // 初始化并每秒更新
